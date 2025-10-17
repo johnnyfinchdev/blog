@@ -1,0 +1,164 @@
+---
+import '../styles/index.css';
+
+import ProfilePicture from '../assets/pfp.png';
+
+import Card from '../components/Card.astro';
+import Layout from '../layouts/Layout.astro';
+import ImageGlow from '../components/ImageGlow.astro';
+import Icon from '../components/Icon.astro';
+import { getCollection } from 'astro:content';
+import { getEntry } from 'astro:content';
+import { render } from 'astro:content';
+import { name, subtitle, openGraph } from 'spectre:globals';
+import "./styles/global.css";
+import Message from '../components/Message.astro';
+
+const [posts, projects, about, challenges, quickInfo, socials] = await Promise.all([
+	getCollection('posts', (post) => post.data.draft !== true),
+	getCollection('projects'),
+	getEntry('other', 'about'),
+	getCollection('challenges'),
+	getCollection('quickInfo'),
+	getCollection('socials')
+]);
+
+// biome-ignore lint/style/noNonNullAssertion: Should always be defined.
+const { Content: About } = await render(about!);
+---
+
+<Layout
+	title={openGraph.home.title || name}
+	description={openGraph.home.description}
+	pagefindIgnore
+>
+	<div class="layout-grid-left" slot="left">
+		<Card class="flex-col-card">
+			<ImageGlow quality={100} width={120} height={120} src={ProfilePicture} alt="Louis looking out of a window" loading='eager' />
+			<p class="title">{name}</>
+			<p class="subtitle">{subtitle} <a href="https://linktr.ee/johnnyfinchdev">JohnnyFinchDev</a></p>
+			<ul class="overview-list">
+				{quickInfo.map((info) => (
+					<li>
+						<Icon type={info.data.icon.type} name={info.data.icon.name as any} width={24} height={24} class='glow-icon' />
+						<span>{info.data.text}</span>
+					</li>
+				))}
+			</ul>
+		</Card>
+		<Card>
+			<h3 class="no-mt">Redes Socialaes</h3>
+			<ul class="overview-list">
+				{socials.map((item) => (
+					<li>
+						<a href={item.data.link} class="socials-link">
+							<Icon type={item.data.icon.type} name={item.data.icon.name as any} width={24} height={24} class='glow-icon' />
+							<span>{item.data.text}</span>
+						</a>
+					</li>
+				))}
+			</ul>
+		</Card>
+	</div>
+	<div class="layout-grid-right" slot="right">
+		<Card>
+			<div class="header-container">
+				<Icon type='lucide' name="info" width={24} height={24} class='glow-icon' />
+				<h2>Información</h2>
+			</div>
+			<div class="prose">
+				<About />
+			</div>
+		</Card>
+		<Card>
+			<div class="header-container">
+				<Icon type='lucide' name="rss" width={24} height={24} class='glow-icon' />
+				<h2>Últimos posts</h2>
+			</div>
+			<div class="content-container">
+				{posts.length === 0 ? <Message resource='posts'/> : 
+						posts.sort((a, b) => b.data.createdAt.getTime() - a.data.createdAt.getTime()).slice(0, 2).map((post) => (
+					<a href={`/blog/${post.id}`} class="post-container">
+						<div class="post-header">
+							<h3>{post.data.title}</h3>
+							<span class="post-date">{post.data.createdAt.toLocaleDateString()}</span>
+						</div>
+						<span>{post.data.description}</span>
+					</a>
+				))}
+			</div>
+		</Card>
+		<Card>
+			<div class="header-container">
+				<Icon type='lucide' name="folder-git" width={24} height={24} class='glow-icon' />
+				<h2>Últimos proyectos</h2>
+			</div>
+			<div class="content-container">
+				{projects.length === 0 ? <Message resource='proyectos'/> : 
+						projects.sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).slice(0, 2).map((project) => (
+					<a href={`/projects/${project.id}`} class="post-container">
+						<div class="post-header">
+							<h3>{project.data.title}</h3>
+							<span class="post-date">{project.data.date.toLocaleDateString()}</span>
+						</div>
+						<span>{project.data.description}</span>
+					</a>
+				))}
+			</div>
+		</Card>
+		<Card>
+			<div class="header-container">
+				<Icon type='lucide' name="swords" width={24} height={24} class='glow-icon' />
+				<h2>Últimos retos</h2>
+			</div>
+			<div class="content-container">
+				{challenges.length === 0 ? <Message resource='retos'/> : 
+						challenges.sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).slice(0, 2).map((challenge) => (
+					<a href={`/challenges/${challenge.id}`} class="post-container">
+						<div class="post-header">
+							<h3>{challenge.data.title}</h3>
+							<span class="post-date">{challenge.data.date.toLocaleDateString()}</span>
+						</div>
+						<span>{challenge.data.description}</span>
+					</a>
+				))}
+			</div>
+		</Card>
+		<Card>
+			<div class="header-container">
+				<Icon type='lucide' name="message-square-code" width={24} height={24} class='glow-icon' />
+				<h2>Newsletter</h2>
+			</div>
+		<div class="content-container">
+				<div
+					class="flex flex-wrap items-center w-full max-w-5xl p-5 mx-auto text-left ">
+					<div class="flex-1 w-full mb-5 md:mb-0 md:pr-5 lg:pr-10 md:w-1/2">
+						<h3 class="mb-2 text-2xl font-bold text-gray-200">Suscribete a la Newsletter</h3>
+						<p class="text-gray-500 dark:text-gray-400 ">Proporcina tu email para mandarte notificaciones sobre <b>eventos</b>, <b>retos</b>, <b>posts</b> y mucho más <em>(nada de spam)</em> sobre la comunidad de Hola Developers! Y si añades tu usuario de <a target="_blank" href="https://discord.gg/wkvYgfGBWW">Discord</a> tendrás un <b>canal exclusivo</b> donde me podrás <b>preguntar lo que quieras</b> sobre programación web.
+						</p>
+					</div>
+					<div class="w-full px-1 md:flex-0 md:w-auto lg:w-1/2">
+						<form name="newsletter" method="POST" data-netlify="true">
+							<input type="hidden" name="tags" value="earlyaccess">
+							<div class="flex flex-col sm:flex-row">
+								<input type="text" id="discord" name="discord" placeholder="Discord (opcional)" class="flex-1 px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:[#121212] dark:text-white dark:placeholder-gray-400 dark:border-[#fabfad] dark:focus:ring-gray-900 dark:focus:border-[#fc8e6d]">
+							</div>
+							<div class="flex flex-col sm:flex-row pt-4">
+								<input type="email" id="email" name="email" placeholder="Email*" class="flex-1 px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:[#121212] dark:text-white dark:placeholder-gray-400 dark:border-[#fabfad] dark:focus:ring-gray-900 dark:focus:border-[#fc8e6d]" required>
+							</div>
+							<div class="flex flex-col sm:flex-row pt-4">
+								<div class="relative group m-auto">
+									<div
+										class="absolute transitiona-all duration-1000 opacity-70 -inset-px bg-gradient-to-r from-[#ff7b72] via-[#ffa657] to-[#f48866] rounded-xl blur-lg group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200 animate-tilt">
+									</div>
+									<button type="submit" class="relative inline-flex flex-1 px-3 py-2 text-white text-lg bg-gray-900 rounded-md sm:mt-0 sm:w-auto whitespace-nowrap dark:bg-gray-900"> Suscribirse </button>
+								</div>
+							</div>
+					</div>
+				</div>
+				<input type="hidden" name="form-name" value="newsletter" />
+			</form>
+		</div>
+		</Card>
+	</div>
+</Layout>

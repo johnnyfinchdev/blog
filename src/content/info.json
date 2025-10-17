@@ -1,0 +1,19 @@
+[
+  {
+    "id": 1,
+    "icon": {
+      "type": "lucide",
+      "name": "users-round"
+    },
+    "text": "Comunidad de Web Developers"
+  },
+  {
+    "id": 2,
+    "icon": {
+      "type": "lucide",
+      "name": "map-pin"
+    },
+    "type": "lucide",
+    "text": "Hecho en el código"
+  }
+]

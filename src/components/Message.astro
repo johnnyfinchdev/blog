@@ -1,0 +1,13 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"div"> {}
+
+const { class: className, resource = 'recurso', ...props } = Astro.props;
+---
+<br>
+<div style={{ backgroundColor: "#9C5843FF", padding: "20px" }}>
+  <p style={{ color: "black", margin: "0" }}>
+    Todavía no hay {resource} disponibles, estamos picando código.
+  </p>
+</div>

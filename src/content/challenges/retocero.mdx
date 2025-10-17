@@ -1,0 +1,141 @@
+---
+title: Reto 0
+date: 10-12-2024
+description: Plantilla para los retos de JavaScript
+image: "../assets/retos-js.jpg"
+info:
+  - text: Únete a Discord
+    link: https://discord.gg/wkvYgfGBWW
+    icon:
+      type: "simple-icons"
+      name: "discord"
+  # - text: JohnnyFinchDev
+  #   icon:
+  #     type: "lucide"
+  #     name: "code"
+---
+
+{/* Seccion Intro */}
+# ¡Hola Developers!
+
+  > En este reto pondrás a prueba tus habilidades con **arrays** y **funciones** en JavaScript.
+  Tu misión será crear una función que reciba un arreglo de números y devuelva **solo aquellos que sean números primos**, ordenados de menor a mayor.
+
+{/* Seccion Enunciado */}
+## Enunciado
+
+  ```json title="index.js"
+  /* 
+  Crea una función llamada `filtrarPrimos` que reciba un arreglo de números enteros.
+  Debe devolver un nuevo arreglo con todos los números primos del arreglo original, 
+  ordenados de menor a mayor.
+
+  Ejemplo:
+  Entrada: [4, 7, 10, 11, 13, 2, 9]
+  Salida: [2, 7, 11, 13]
+  */
+  ```
+
+<br/>
+
+{/* Seccion Pistas */}
+<div style={"background-color: #F8D30015; padding:10px; border-radius:10px;"}>
+  {/* Pistas header*/}
+    <div style={"display:flex; flex-direction: row; align-content: center !important;"}>
+      <h1 style={"margin-top:0 !important;"}>Pistas</h1> 
+    </div>
+    {/* Pista 1 */}
+    <details>
+      <summary>Pista 1</summary>
+      Empieza por crear una función que determine si un número es primo o no.
+
+      ```javascript title="pista1.js"
+      function esPrimo(num) {
+        // Devuelve true si num es primo, false si no.
+      }
+      ```
+    </details>
+<br/>
+
+    {/* Pista 2 */}
+    <details>
+      <summary>Pista 2</summary>
+      Recuerda que un número primo es aquel **mayor que 1** que solo es divisible por **1 y por sí mismo**.
+
+      ```javascript title="pista2.js"
+      esPrimo(7); // true
+      esPrimo(10); // false
+      ```
+    </details>
+<br/>
+
+    {/* Pista 3 */}
+    <details>
+      <summary>Pista 3</summary>
+      Usa el método **filter()** para quedarte solo con los números que sean primos.
+
+      ```javascript title="pista3.js"
+      const primos = numeros.filter(esPrimo);
+      ```
+    </details>
+<br/>
+
+    {/* Pista 4 */}
+    <details>
+      <summary>Pista 4</summary>
+      No olvides **ordenar** los números antes de devolverlos. Puedes usar el método **sort()**.
+
+      ```javascript title="pista4.js"
+      primos.sort((a, b) => a - b);
+      ```
+    </details>
+<br/>
+
+    {/* Pista 5 */}
+    <details>
+      <summary>Pista 5</summary>
+      Puedes unir todo dentro de una única función:
+
+      ```javascript title="pista5.js"
+      function filtrarPrimos(arr) {
+        // Usa esPrimo, filter y sort aquí
+      }
+      ```
+    </details>
+  </div>
+<br/>
+
+{/* Seccion Solución */}
+<div style={"background-color: #F8000015; padding:10px; border-radius:10px"}>
+  {/* Solución header*/}
+  <div style={"display:flex; flex-direction: row; align-content: center !important;"}>
+    <h1 style={"margin-top:0 !important;"}>Solución</h1> 
+    <h4 style={"margin-left:5px;margin-top:0 !important; color: #A00000A6;"}>Danger zone</h4>
+  </div>
+
+    {/* Solución */}
+    <details>
+      <summary>Solución</summary>
+        Aquí tienes una posible implementación de la función:
+
+        ```javascript title="solucion.js"
+        function esPrimo(num) {
+          if (num <= 1) return false;
+          for (let i = 2; i <= Math.sqrt(num); i++) {
+            if (num % i === 0) return false;
+          }
+          return true;
+        }
+
+        function filtrarPrimos(arr) {
+          return arr
+            .filter(esPrimo)
+            .sort((a, b) => a - b);
+        }
+
+        // Ejemplo de uso:
+        console.log(filtrarPrimos([4, 7, 10, 11, 13, 2, 9]));
+        // Resultado esperado: [2, 7, 11, 13]
+        ```
+    </details>
+</div>

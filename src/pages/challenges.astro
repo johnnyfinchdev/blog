@@ -1,0 +1,67 @@
+---
+import '../styles/article-list.css';
+
+import { getCollection } from "astro:content";
+import Card from "../components/Card.astro";
+import Icon from "../components/Icon.astro";
+import Layout from "../layouts/Layout.astro";
+import { openGraph } from 'spectre:globals';
+import Message from '../components/Message.astro';
+
+const challenges = await getCollection('challenges');
+---
+<Layout
+	title={openGraph.challenges.title || "Challenges"}
+	description={openGraph.challenges.description}
+	pagefindIgnore
+>
+  <div class="layout-grid-left" slot="left">
+    <Card class="flex-col-card">
+      <h2 class="no-mt">Hay</h2>
+			<div class="stats-div">
+				<div class="stat">
+					<h3 class="text-glow">{challenges.length}</h3>
+					<span>Reto{challenges.length === 1 ? '' : 's'}</span>
+				</div>
+			</div>
+    </Card>
+  </div>
+  <div class="layout-grid-right" slot="right">
+		<Card>
+			<div class="header-container">
+				<Icon type='lucide' name="swords" width={24} height={24} class='glow-icon' />
+				<h2>Últimos retos</h2>
+			</div>
+			<div class="content-container">
+				{challenges.length === 0 ? <Message resource='posts'/> : challenges.sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).map((challenge) => (
+					<a href={`/challenges/${challenge.id}`} class="post-container">
+						<div class="post-header">
+							<h3>{challenge.data.title}</h3>
+							<span class="post-date">{challenge.data.date.toLocaleDateString()}</span>
+						</div>
+						<span>{challenge.data.description}</span>
+					</a>
+				))}
+			</div>
+		</Card>
+  </div>
+</Layout>
+<style>
+	.stats-div {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.stat {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.stat h3 {
+		font-size: 2em;
+		margin: 0;
+		margin-bottom: .5rem;
+	}
+
+</style>

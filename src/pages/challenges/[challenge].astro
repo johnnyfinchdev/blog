@@ -1,0 +1,81 @@
+---
+import '../../styles/article.css';
+
+import Card from "../../components/Card.astro";
+import Layout from "../../layouts/Layout.astro";
+
+import type { GetStaticPaths } from "astro";
+import type { CollectionEntry } from "astro:content";
+import { render } from "astro:content";
+import { getCollection } from "astro:content";
+import ImageGlow from "../../components/ImageGlow.astro";
+import Icon from "../../components/Icon.astro";
+
+interface Props {
+  challenge: CollectionEntry<'challenges'>;
+}
+
+const { challenge } = Astro.props;
+
+export const getStaticPaths = (async () => {
+  const challenges = await getCollection('challenges');
+
+  return challenges.map((challenge) => ({ params: { challenge: challenge.id }, props: { challenge } }));
+}) satisfies GetStaticPaths;
+
+console.log(challenge.data.info);
+
+const { Content } = await render(challenge);
+---
+<Layout
+  title={challenge.data.title}
+  description={challenge.data.description}
+  image={challenge.data.image}
+  article={{
+    createdAt: challenge.data.date,
+  }}
+>
+  <div class="left reverse" slot="left">
+    <Card class="toc-card">
+      <h2 class="no-mt">¿Alguna duda?</h2>
+      <ul class="overview-list">
+        {challenge.data.info.map((info) => {
+          const Tag = info.link ? 'a' : 'div';
+          return (
+            <li>
+              <Tag href={info.link} class='challenge-info-item'>
+                <Icon type={info.icon.type} name={info.icon.name as any} width={24} height={24} class='glow-icon' />
+                <span>{info.text}</span>
+              </Tag>
+            </li>
+          )
+        })}
+      </ul>
+    </Card>
+  </div>
+  <article slot="right" data-pagefind-body>
+    <Card>
+      <div class="article-header" id="_top" data-pagefind-ignore>
+        {challenge.data.image && <ImageGlow quality={100} class="article-image" src={challenge.data.image} alt={challenge.data.title} />}
+        <div class="header">
+          <div>
+            <h1 class="no-mt article-h1">{challenge.data.title}</h1>
+          </div>
+          <div class="article-info">
+            <span>{challenge.data.date.toLocaleDateString()}</span>
+          </div>
+        </div>
+      </div>
+      <Content />
+      <hr class="end-of-article" />
+      <a href="/challenges" class="block-link" data-pagefind-ignore>← Volver a los retos</a>
+    </Card>
+  </article>
+</Layout>
+<style>
+  .challenge-info-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+</style>
