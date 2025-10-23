@@ -1,0 +1,93 @@
+---
+title: "Minecraft Server con Termux"
+description: "Find out how to configure Spectre."
+image: "../assets/template.png"
+createdAt: 10-24-2024
+draft: false
+tags:
+  - minecraft
+  - termux
+  - tutorial
+---
+# Hola Developers!  
+En este post te voy a enseñar como alojar tu servidor de Minecraft desde tu teléfono móvil con Termux completamente gratis y sin muchas complicaciones, cualquiera siguiendo el paso a paso lo puede ahcer, igualmente si te pierdes, siempre puedes ver el vídeo tutorial. Venga comencemos:
+# Tuturial
+
+### Instalación inicial
+Vas a necesitar los siguiente prerequisitos:
+1. Termux
+2. Conexión a internet
+> No lo he probado en iOS por lo que no se si funciona. Este tutorial está enfocado en sistemas Android
+
+### Instalación CLI proot-distro
+
+Proot-distro es un `Bash script wrapper` que facilita la gestión de instalaciones de distribuciones **Linux** basadas en `chroot`. 
+**No requiere root** ni ninguna ROM, kernel, etc. especial. 
+Todo lo que necesita para empezar es la **última versión** de la aplicación **Termux**.
+
+Más info [aquí](https://github.com/termux/proot-distro)
+
+<br/>
+
+#### Paso a paso
+
+1. En Termux ejecutamos lo siguiente comando:
+
+```json title="Termux"
+pkg install proot-distro
+```
+2. Luego para la instalación de Ubuntu (se puede instalar [otras distros](https://github.com/termux/proot-distro))
+
+```json title="Termux"
+proot-distro install ubuntu
+```
+
+3. Una vez instaldo, hacemos login en nuestra distro de Ubuntu (o la que hayas instalado)
+```json title="Termux"
+proot-distro login ubuntu
+```
+
+4. Dentro de Ubuntu ejecutas lo siguiente:
+```json title="Termux"
+apt-get update
+```
+> **¿Cómo sabes si estás dentro de la distribución?**<br/>
+> Pues verás en pantalla algo como `root@localhost:~#`
+
+5. Instalamos el JRE de Java, en este caso, la versión 17
+```json title="Termux"
+apt-get install openjdk-17-jre
+```
+
+6. Entras en la web de [FabricMC](fabricmc.net/use/server/) para descargar el launcher del nuestro server
+
+7. Selecciona la versión (en mi caso selecciono la 1.20.4) y el resto lo dejas como está: 
+```json title="fabricmc.net"
+Minecraft version: 1.20.4
+Fabric Loader Version: 0.17.3
+Installer Version: 1.1.0
+```
+8. Bajas un poco y copias el comando `CLI` que empieza por `curl` y lo pegas en Termux
+
+9. Lo mismo del paso anterior pero con el segundo comando de la página, el que empieza por `java` (este será el que iniciará el server)
+
+10. Una vez terminado haz un escribe `exit` y ejecuta el siguiente comando para aceptar el eula de `Minecraft`:
+
+```json title="Termux"
+nano eula.txt
+```
+
+11. Cambias `false` por `true`
+
+12. Antes de iniciar el server, vamos a ver que IP tenemos, pon en la consola `ifconfig` y guardas la **IP local** de tu teléfono.
+
+
+13. Ahora si, vuelve a ejecutar el comando del paso 9
+
+14. Y finalmente solo tienes que entrar en Minecraft 1.20.4 (o la versión que hayas elegido) y poner la **IP** con el puerto *25565* (e.j.: 10.0.0.1:25565)
+
+15. Suscribirte al canal de [JohnnyFinchDev](https://www.youtube.com/@JohnnyFinchDev) por tremendo Tuturial (opcional)
+
+## Vídeo Tuturial
+
+<a href="https://www.youtube.com/shorts/sl9IrF734Ic" target="blank"><img align="center" src="https://img.shields.io/badge/Youtube-0077B5?style=for-the-badge&logo=youtube&logoColor=white&color=red" alt="Vídeo Tuturial"/></a>
