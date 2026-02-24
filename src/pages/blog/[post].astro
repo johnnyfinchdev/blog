@@ -1,5 +1,5 @@
 ---
-import '../../styles/article.css';
+import "../../styles/article.css";
 
 import ImageGlow from "../../components/ImageGlow.astro";
 import Card from "../../components/Card.astro";
@@ -9,17 +9,16 @@ import type { GetStaticPaths } from "astro";
 import type { CollectionEntry } from "astro:content";
 import { render } from "astro:content";
 import { getCollection } from "astro:content";
-import { giscus } from 'spectre:globals';
-
+import { giscus } from "spectre:globals";
 /**
  * Estimates the time it takes to read a post in minutes based on:
  * - A reading speed of 200 words per minute
  * - 10 seconds per image
  * - 20 seconds per code block
- * 
+ *
  * @param post The post to estimate the reading time for
  */
-function timeToRead(post: CollectionEntry<'posts'>): number {
+function timeToRead(post: CollectionEntry<"posts">): number {
   const numWords = (post.body || "")
     .replace(/.*\[(.*?)\].*/gm, "$1")
     .replace(/```.*?```/gms, "")
@@ -28,17 +27,24 @@ function timeToRead(post: CollectionEntry<'posts'>): number {
   const numImages = post.body?.match(/!\[/g)?.length || 0;
   const numCodeblocks = post.body?.match(/```/g)?.length || 0;
 
-  return Math.ceil(numWords / 200) + Math.ceil(numImages / 6) + Math.ceil(numCodeblocks / 3);
-};
+  return (
+    Math.ceil(numWords / 200) +
+    Math.ceil(numImages / 6) +
+    Math.ceil(numCodeblocks / 3)
+  );
+}
 
 interface Props {
-  post: CollectionEntry<'posts'>;
+  post: CollectionEntry<"posts">;
 }
 
 const { post } = Astro.props;
 
 export const getStaticPaths = (async () => {
-  const posts = await getCollection('posts', (post) => post.data.draft !== true);
+  const posts = await getCollection(
+    "posts",
+    (post) => post.data.draft !== true,
+  );
 
   return posts.map((post) => ({ params: { post: post.id }, props: { post } }));
 }) satisfies GetStaticPaths;
@@ -62,18 +68,25 @@ const { Content, headings } = await render(post);
         <li class="toc-li">
           <a href={`#_top`} class="active">{post.data.title}</a>
         </li>
-        {headings.map((heading, i) => (
-          <li class="toc-li" data-depth={heading.depth}>
-            <a href={`#${heading.slug}`}>{heading.text}</a>
-          </li>
-        ))}
+        {
+          headings.map((heading, i) => (
+            <li class="toc-li" data-depth={heading.depth}>
+              <a href={`#${heading.slug}`}>{heading.text}</a>
+            </li>
+          ))
+        }
       </ol>
     </Card>
   </div>
   <article slot="right" data-pagefind-body>
     <Card>
       <div class="article-header" id="_top" data-pagefind-ignore>
-        <ImageGlow quality={100} class="article-image" src={post.data.image} alt={post.data.title} />
+        <ImageGlow
+          quality={100}
+          class="article-image"
+          src={post.data.image}
+          alt={post.data.title}
+        />
         <div class="header">
           <div>
             <h1 class="no-mt article-h1">{post.data.title}</h1>
@@ -81,49 +94,90 @@ const { Content, headings } = await render(post);
           <div class="article-info">
             <span>{post.data.createdAt.toLocaleDateString()}</span>
             <span>/</span>
-            <span>{timeToRead(post)} minutos{timeToRead(post) === 1 ? "" : "s"} en leer</span>
+            <span
+              >{timeToRead(post)} minutos{timeToRead(post) === 1 ? "" : "s"} en leer</span
+            >
             <span>/</span>
-            <span>Etiquetas: {post.data.tags.map((tag) => tag.id).join(", ")}</span>
+            <span
+              >Etiquetas: {post.data.tags.map((tag) => tag.id).join(", ")}</span
+            >
           </div>
         </div>
       </div>
       <Content />
+      {
+        post.data.video && (
+          <div class="div-video">
+            <video class="article-video" controls>
+              <source src={post.data.video} type="video/mp4" />
+              Tu navegador no soporta el elemento de video.
+            </video>
+          </div>
+        )
+      }
+      {
+        post.data.videoId && (
+          <a
+            href={`https://www.youtube.com/watch?v=${post.data.videoId}`}
+            style={{ color: "#FFFFFF", fontWeight: "bold" }}
+            target="_blank"
+          >
+            <div
+              style={{
+                backgroundColor: "#FF7349",
+                borderRadius: "10px",
+                textAlign: "center",
+              }}
+            >
+              <p>Ver en Youtube</p>
+            </div>
+          </a>
+        )
+      }
       <hr class="end-of-article" />
-      <a href="/blog" class="block-link" data-pagefind-ignore>← Volver a los blogs</a>
+      <a href="/blog" class="block-link" data-pagefind-ignore
+        >← Volver a los blogs</a
+      >
     </Card>
-    {giscus && (
-      <Card>
-        <div class="comments" data-pagefind-ignore>
-          <script
-            is:inline
-            src="https://giscus.app/client.js"
-            data-repo={giscus.repository}
-            data-repo-id={giscus.repositoryId}
-            data-category={giscus.category}
-            data-category-id={giscus.categoryId}
-            data-mapping={giscus.mapping}
-            data-strict={giscus.strict === true ? "1" : "0"}
-            data-reactions-enabled={giscus.reactionsEnabled === true ? "1" : "0"}
-            data-emit-metadata={giscus.emitMetadata === true ? "1" : "0"}
-            data-input-position={giscus.commentsInput}
-            data-theme={giscus.theme || "https://spectre.lou.gg/styles/giscus"}
-            data-lang={giscus.lang}
-            data-loading="lazy"
-            crossorigin="anonymous"
-            async
-          />
-        </div>
-      </Card>
-    )}
+    {
+      giscus && (
+        <Card>
+          <div class="comments" data-pagefind-ignore>
+            <script
+              is:inline
+              src="https://giscus.app/client.js"
+              data-repo={giscus.repository}
+              data-repo-id={giscus.repositoryId}
+              data-category={giscus.category}
+              data-category-id={giscus.categoryId}
+              data-mapping={giscus.mapping}
+              data-strict={giscus.strict === true ? "1" : "0"}
+              data-reactions-enabled={
+                giscus.reactionsEnabled === true ? "1" : "0"
+              }
+              data-emit-metadata={giscus.emitMetadata === true ? "1" : "0"}
+              data-input-position={giscus.commentsInput}
+              data-theme={
+                giscus.theme || "https://spectre.lou.gg/styles/giscus"
+              }
+              data-lang={giscus.lang}
+              data-loading="lazy"
+              crossorigin="anonymous"
+              async
+            />
+          </div>
+        </Card>
+      )
+    }
   </article>
 </Layout>
-<script src="../../scripts/toc.ts" />
+<script src="../../scripts/toc.ts"></script>
 <style is:global>
   .toc-card ol {
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: .5rem;
+    gap: 0.5rem;
     margin-bottom: 0;
     list-style-type: none;
     position: relative;
@@ -131,8 +185,8 @@ const { Content, headings } = await render(post);
 
   .toc-card ol li a {
     color: #c7c7c7;
-    font-size: .925rem;
-    padding: .25rem .5rem;
+    font-size: 0.925rem;
+    padding: 0.25rem 0.5rem;
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
   }
@@ -164,6 +218,17 @@ const { Content, headings } = await render(post);
     gap: 2rem;
   }
 
+  .div-video {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .article-video {
+    width: 50%;
+    max-width: 100%;
+    border-radius: 8px;
+  }
+
   .comments * {
     border-color: #353535 !important;
   }
@@ -173,5 +238,4 @@ const { Content, headings } = await render(post);
       gap: 1rem;
     }
   }
-
 </style>

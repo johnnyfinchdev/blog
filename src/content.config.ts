@@ -55,6 +55,8 @@ const posts = defineCollection({
     ),
     draft: z.boolean().optional().default(false),
     image: image(),
+    videoId: z.string().optional(),
+    video: z.string().optional(),
   })
 });
 

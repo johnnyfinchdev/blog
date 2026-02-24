@@ -1,8 +1,10 @@
 ---
 title: "Minecraft Server con Termux"
-description: "Find out how to configure Spectre."
-image: "../assets/template.png"
-createdAt: 10-24-2024
+description: "Tutorial para alojar un servidor de Minecraft en Android usando Termux."
+image: "../assets/posts/images/MCTERMUX.png"
+createdAt: 11-17-2024
+videoId: "sl9IrF734Ic"
+video: "/videos/posts/minecraft-server.mp4"
 draft: false
 tags:
   - minecraft
@@ -11,8 +13,7 @@ tags:
 ---
 # Hola Developers!  
 En este post te voy a enseñar como alojar tu servidor de Minecraft desde tu teléfono móvil con Termux completamente gratis y sin muchas complicaciones, cualquiera siguiendo el paso a paso lo puede ahcer, igualmente si te pierdes, siempre puedes ver el vídeo tutorial. Venga comencemos:
-# Tuturial
-
+# Tutorial
 ### Instalación inicial
 Vas a necesitar los siguiente prerequisitos:
 1. Termux
@@ -33,36 +34,37 @@ Más info [aquí](https://github.com/termux/proot-distro)
 
 1. En Termux ejecutamos lo siguiente comando:
 
-```json title="Termux"
+```bash
 pkg install proot-distro
 ```
 2. Luego para la instalación de Ubuntu (se puede instalar [otras distros](https://github.com/termux/proot-distro))
 
-```json title="Termux"
+```bash
 proot-distro install ubuntu
 ```
 
 3. Una vez instaldo, hacemos login en nuestra distro de Ubuntu (o la que hayas instalado)
-```json title="Termux"
+```bash
 proot-distro login ubuntu
 ```
 
 4. Dentro de Ubuntu ejecutas lo siguiente:
-```json title="Termux"
+```bash
 apt-get update
 ```
 > **¿Cómo sabes si estás dentro de la distribución?**<br/>
 > Pues verás en pantalla algo como `root@localhost:~#`
 
 5. Instalamos el JRE de Java, en este caso, la versión 17
-```json title="Termux"
+```bash
 apt-get install openjdk-17-jre
 ```
 
 6. Entras en la web de [FabricMC](fabricmc.net/use/server/) para descargar el launcher del nuestro server
 
 7. Selecciona la versión (en mi caso selecciono la 1.20.4) y el resto lo dejas como está: 
-```json title="fabricmc.net"
+```ts {"        Versiones que uso yo, pero tu puedes usar la que quieras:":1-4} title="fabricmc.net"
+              //
 Minecraft version: 1.20.4
 Fabric Loader Version: 0.17.3
 Installer Version: 1.1.0
@@ -73,7 +75,7 @@ Installer Version: 1.1.0
 
 10. Una vez terminado haz un escribe `exit` y ejecuta el siguiente comando para aceptar el eula de `Minecraft`:
 
-```json title="Termux"
+```bash
 nano eula.txt
 ```
 
@@ -88,15 +90,4 @@ nano eula.txt
 
 15. Suscribirte al canal de [JohnnyFinchDev](https://www.youtube.com/@JohnnyFinchDev) por tremendo Tuturial (opcional)
 
-## Vídeo Tutorial
-
-export const id= "sl9IrF734Ic"
-
-    <div>
-      <iframe
-        className="aspect-video w-full rounded-2xl"
-        src={"https://www.youtube.com/embed/"+ id}
-        title="Vídeo Tutorial de como instalar un servidor de minecraft en tu teléfono android"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      ></iframe>
-    </div>
+# Vídeo Tutorial
