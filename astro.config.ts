@@ -38,6 +38,19 @@ const config = defineConfig({
           title: 'Challenges'
         }
       },
+      giscus: {
+        repository: 'johnnyfinchdev/blog',
+        repositoryId: 'R_kgDOQEOfRA',
+        category: 'General',
+        categoryId: 'DIC_kwDOQEOfRM4C3Itz',
+        mapping: 'title',
+        strict: false,
+        reactionsEnabled: true,
+        emitMetadata: false,
+        inputPosition: 'top',
+        lang: 'es',
+        loading: 'lazy',
+      }
     })
   ],
   adapter: node({

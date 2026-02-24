@@ -62,9 +62,17 @@ const giscusObjectSchema = z.object({
    */
   theme: z.string().optional(),
   /**
+   * The postion of the comment input.
+   */
+  inputPosition: z.string().optional(),
+  /**
    * The language to use for the comments.
    */
   lang: z.string(),
+  /**
+   * The loading type to use for the comments.
+   */
+  loading: z.string().optional(),
   /**
    * Where the comments input should be placed. Default is `bottom`.
    */
