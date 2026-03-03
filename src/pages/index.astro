@@ -25,17 +25,6 @@ const [posts, projects, about, challenges, quickInfo, socials] = await Promise.a
 
 // biome-ignore lint/style/noNonNullAssertion: Should always be defined.
 const { Content: About } = await render(about!);
-
-import staticFormsPlugin from "@cloudflare/pages-plugin-static-forms";
-
-export const onRequest: PagesFunction = staticFormsPlugin({
-  respondWith: ({ formData, name }) => {
-    const email = formData.get("email");
-    return new Response(
-      `Hello, ${email}! Thank you for submitting the ${name} form.`,
-    );
-  },
-});
 ---
 
 <Layout
@@ -160,7 +149,7 @@ export const onRequest: PagesFunction = staticFormsPlugin({
 							<div class="flex flex-col sm:flex-row pt-4">
 								<div class="relative group m-auto">
 									<div
-										class="absolute transitiona-all duration-1000 opacity-70 -inset-px bg-gradient-to-r from-[#ff7b72] via-[#ffa657] to-[#f48866] rounded-xl blur-lg group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200 animate-tilt">
+										class="absolute transitiona-all duration-1000 opacity-70 -inset-px bg-linear-to-r from-[#ff7b72] via-[#ffa657] to-[#f48866] rounded-xl blur-lg group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200 animate-tilt">
 									</div>
 									<button type="submit" class="relative inline-flex flex-1 px-3 py-2 text-white text-lg bg-gray-900 rounded-md sm:mt-0 sm:w-auto whitespace-nowrap dark:bg-gray-900"> Suscribirse </button>
 								</div>
@@ -173,3 +162,57 @@ export const onRequest: PagesFunction = staticFormsPlugin({
 		</Card>
 	</div>
 </Layout>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+	const form = document.querySelector('[data-static-form-name="newsletter"]');
+	if (form) {
+		form.addEventListener('submit', async (e) => {
+			e.preventDefault();
+			
+			const formData = new FormData(form as HTMLFormElement);
+			const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+			const originalText = submitButton?.textContent || 'Suscribirse';
+			
+			try {
+				// Deshabilita el botón y muestra estado
+				if (submitButton) {
+					submitButton.disabled = true;
+					submitButton.textContent = 'Enviando...';
+				}
+				
+				const response = await fetch('/api/newsletter', {
+					method: 'POST',
+					body: formData,
+				});
+				
+				const data = await response.json();
+				
+				// Si es exitoso, navega a /thanks
+				if (data.success) {
+					if (document.startViewTransition) {
+						document.startViewTransition(() => {
+							window.location.href = '/thanks';
+						});
+					} else {
+						window.location.href = '/thanks';
+					}
+				} else {
+					alert('Error al suscribirse. Intenta nuevamente.');
+					if (submitButton) {
+						submitButton.disabled = false;
+						submitButton.textContent = originalText;
+					}
+				}
+			} catch (error) {
+				console.error('Error:', error);
+				alert('Error al suscribirse. Intenta nuevamente.');
+				if (submitButton) {
+					submitButton.disabled = false;
+					submitButton.textContent = originalText;
+				}
+			}
+		});
+	}
+});
+</script>

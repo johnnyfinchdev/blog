@@ -3,73 +3,93 @@ import type { APIRoute } from 'astro';
 // This endpoint must run on the server, not be prerendered as static output.
 export const prerender = false;
 
-// NOTE: make sure you set CF_TURNSTILE_SECRET in your environment (.env) before running.
-// you can obtain a secret key from https://dash.cloudflare.com/ and the Turnstile settings for your site.
-
-export const get: APIRoute = () => {
-  return new Response(JSON.stringify({ success: false, error: 'method not allowed' }), {
-    status: 405,
-    headers: { 'Content-Type': 'application/json' },
-  });
+export const GET: APIRoute = () => {
+	return new Response(JSON.stringify({ success: false, error: 'Use POST method' }), {
+		status: 405,
+		headers: { 'Content-Type': 'application/json' },
+	});
 };
 
-export const post: APIRoute = async ({ request }) => {
-  try {
-    const form = await request.formData();
-    const token = form.get('cf-turnstile-response')?.toString();
+export const POST: APIRoute = async ({ request, locals }) => {
+	try {
+		const formData = await request.formData();
+		const email = formData.get('email');
+		const discord = formData.get('discord');
+		const tags = formData.get('tags');
 
-    if (!token) {
-      return new Response(JSON.stringify({ success: false, error: 'no token' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
+		// Validación
+		if (!email || typeof email !== 'string') {
+			return new Response(
+				JSON.stringify({ success: false, error: 'Email is required' }),
+				{ status: 400, headers: { 'Content-Type': 'application/json' } }
+			);
+		}
 
-    const secret = process.env.CF_TURNSTILE_SECRET;
-    if (!secret) {
-      return new Response(
-        JSON.stringify({ success: false, error: 'CF_TURNSTILE_SECRET not defined' }),
-        {
-          status: 500,
-          headers: { 'Content-Type': 'application/json' },
-        },
-      );
-    }
+		// En desarrollo, obtén las variables de entorno del proceso
+		const resendApiKey = process.env.RESEND_API_KEY || (locals.runtime?.env?.RESEND_API_KEY);
+		const notifyEmail = process.env.NOTIFY_EMAIL || (locals.runtime?.env?.NOTIFY_EMAIL);
 
-    const verifyUrl = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
-    const verifyBody = new URLSearchParams({ secret, response: token });
+		if (!resendApiKey || !notifyEmail) {
+			console.error('Missing RESEND_API_KEY or NOTIFY_EMAIL environment variables');
+			return new Response(
+				JSON.stringify({ success: false, error: 'Configuration error' }),
+				{ status: 500, headers: { 'Content-Type': 'application/json' } }
+			);
+		}
 
-    const verifyRes = await fetch(verifyUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: verifyBody.toString(),
-    });
+		const emailBody = `
+Nueva suscripción en la newsletter:
 
-    const result = await verifyRes.json();
-    if (!result.success) {
-      return new Response(
-        JSON.stringify({ success: false, error: 'verification failed', details: result }),
-        {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' },
-        },
-      );
-    }
+Email: ${email}
+Discord: ${discord || 'Not provided'}
+Tags: ${tags}
 
-    // TODO: add your newsletter subscription logic here. For example, send the email to a
-    // mailing list provider or save it in a database. You can access form.get('email') etc.
+Enviado a las: ${new Date().toISOString()}
+		`.trim();
 
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  } catch (err) {
-    console.error('newsletter API error', err);
-    return new Response(JSON.stringify({ success: false, error: 'internal error' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
+		const response = await fetch('https://api.resend.com/emails', {
+			method: 'POST',
+			headers: {
+				'Authorization': `Bearer ${resendApiKey}`,
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				from: notifyEmail,
+				to: notifyEmail,
+				subject: `Nueva suscripción a la Newsletter - ${email}`,
+				text: emailBody,
+				html: `
+					<html>
+						<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; line-height: 1.6; color: #333;">
+							<h2>Nueva suscripción a la Newsletter</h2>
+							<p><strong>Email:</strong> ${email}</p>
+							<p><strong>Discord:</strong> ${discord || 'Not provided'}</p>
+							<p><strong>Tags:</strong> ${tags}</p>
+							<p><small>Enviado a las: ${new Date().toISOString()}</small></p>
+						</body>
+					</html>
+				`,
+			}),
+		});
+
+		if (!response.ok) {
+			const error = await response.text();
+			console.error('Resend API error:', error);
+			return new Response(
+				JSON.stringify({ success: false, error: 'Failed to send email' }),
+				{ status: 500, headers: { 'Content-Type': 'application/json' } }
+			);
+		}
+
+		return new Response(
+			JSON.stringify({ success: true }),
+			{ status: 200, headers: { 'Content-Type': 'application/json' } }
+		);
+	} catch (error) {
+		console.error('Error:', error);
+		return new Response(
+			JSON.stringify({ success: false, error: 'Internal server error' }),
+			{ status: 500, headers: { 'Content-Type': 'application/json' } }
+		);
+	}
 };

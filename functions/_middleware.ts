@@ -19,6 +19,7 @@ async function sendNotificationEmail(
 		console.error('Missing RESEND_API_KEY or NOTIFY_EMAIL environment variables');
 		return new Response('Configuration error', { status: 500 });
 	}
+console.log('hola');
 
 	const emailBody = `
                         Nueva suscripción en la newsletter:
@@ -59,14 +60,15 @@ async function sendNotificationEmail(
 		if (!response.ok) {
 			const error = await response.text();
 			console.error('Resend API error:', error);
-			return new Response('Failed to send notification', { status: 500 });
+			return new Response(JSON.stringify({ success: false }), { 
+				status: 500,
+				headers: { 'Content-Type': 'application/json' }
+			});
 		}
 
-		return new Response(null, {
-			status: 302,
-			headers: {
-				'Location': '/thanks',
-			},
+		return new Response(JSON.stringify({ success: true }), {
+			status: 200,
+			headers: { 'Content-Type': 'application/json' }
 		});
 	} catch (error) {
 		console.error('Error sending email:', error);
