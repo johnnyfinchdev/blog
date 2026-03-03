@@ -12,7 +12,8 @@ import { spectreDark } from './src/ec-theme';
 // https://astro.build/config
 const config = defineConfig({
   site: 'https://holadevelopers.blog/',
-  output: 'static',
+  // switch to server output so API routes and POST handlers work
+  output: 'server',
   integrations: [
     expressiveCode({
       themes: [spectreDark],

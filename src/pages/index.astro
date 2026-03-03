@@ -301,7 +301,7 @@ const { Content: About } = await render(about!);
     </Card>
 
     <!-- frontend script for handling form without navigating away -->
-    <script type="module" client:visible>
+    <script type="module">
       const form = document.getElementById('newsletter-form');
       const statusEl = document.getElementById('newsletter-status');
 
@@ -316,6 +316,9 @@ const { Content: About } = await render(about!);
               method: 'POST',
               body: data,
             });
+            if (!res.ok) {
+              throw new Error('HTTP ' + res.status);
+            }
             const json = await res.json();
             if (json.success) {
               statusEl.textContent = '¡Te has suscrito correctamente!';

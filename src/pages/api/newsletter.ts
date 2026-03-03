@@ -1,5 +1,8 @@
 import type { APIRoute } from 'astro';
 
+// This endpoint must run on the server, not be prerendered as static output.
+export const prerender = false;
+
 // NOTE: make sure you set CF_TURNSTILE_SECRET in your environment (.env) before running.
 // you can obtain a secret key from https://dash.cloudflare.com/ and the Turnstile settings for your site.
 
