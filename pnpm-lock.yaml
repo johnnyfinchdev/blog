@@ -17,6 +17,9 @@ importers:
       '@astrojs/sitemap':
         specifier: ^3.7.0
         version: 3.7.0
+      '@cloudflare/pages-plugin-static-forms':
+        specifier: ^1.0.3
+        version: 1.0.3
       '@iconify-json/lucide':
         specifier: ^1.2.20
         version: 1.2.20
@@ -190,6 +193,9 @@ packages:
   '@cloudflare/kv-asset-handler@0.4.2':
     resolution: {integrity: sha512-SIOD2DxrRRwQ+jgzlXCqoEFiKOFqaPjhnNTGKXSRLvp1HiOvapLaFG2kEr9dYQTYe8rKrd9uvDUzmAITeNyaHQ==}
     engines: {node: '>=18.0.0'}
+
+  '@cloudflare/pages-plugin-static-forms@1.0.3':
+    resolution: {integrity: sha512-plt4ZalqAyG01B4PeznTOgrUTKeDmEzq7Tub2Hj7r2ynaAhZhkKUTQS9Ye+hIe7mv+jSIvaabAH7HkTqS/n0PA==}
 
   '@cloudflare/unenv-preset@2.14.0':
     resolution: {integrity: sha512-XKAkWhi1nBdNsSEoNG9nkcbyvfUrSjSf+VYVPfOto3gLTZVc3F4g6RASCMh6IixBKCG2yDgZKQIHGKtjcnLnKg==}
@@ -3028,6 +3034,8 @@ snapshots:
       mime: 3.0.0
 
   '@cloudflare/kv-asset-handler@0.4.2': {}
+
+  '@cloudflare/pages-plugin-static-forms@1.0.3': {}
 
   '@cloudflare/unenv-preset@2.14.0(unenv@2.0.0-rc.24)(workerd@1.20260305.0)':
     dependencies:
