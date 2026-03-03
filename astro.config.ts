@@ -11,7 +11,7 @@ import { spectreDark } from './src/ec-theme';
 
 // https://astro.build/config
 const config = defineConfig({
-  site: 'https://holadevelopersBlog.netlify.app',
+  site: 'https://holadevelopers.blog/',
   output: 'static',
   integrations: [
     expressiveCode({
