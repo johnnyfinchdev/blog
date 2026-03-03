@@ -6,7 +6,7 @@ import sitemap from '@astrojs/sitemap';
 import spectre from './package/src';
 import tailwindcss from "@tailwindcss/vite";
 
-import node from '@astrojs/node';
+import cloudflare from '@astrojs/cloudflare';
 import { spectreDark } from './src/ec-theme';
 
 // https://astro.build/config
@@ -53,9 +53,7 @@ const config = defineConfig({
       }
     })
   ],
-  adapter: node({
-    mode: 'standalone'
-  }),
+  adapter: cloudflare(),
   vite: {
     plugins: [tailwindcss()],
   },
