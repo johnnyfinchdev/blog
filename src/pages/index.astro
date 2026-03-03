@@ -25,6 +25,17 @@ const [posts, projects, about, challenges, quickInfo, socials] = await Promise.a
 
 // biome-ignore lint/style/noNonNullAssertion: Should always be defined.
 const { Content: About } = await render(about!);
+
+import staticFormsPlugin from "@cloudflare/pages-plugin-static-forms";
+
+export const onRequest: PagesFunction = staticFormsPlugin({
+  respondWith: ({ formData, name }) => {
+    const email = formData.get("email");
+    return new Response(
+      `Hello, ${email}! Thank you for submitting the ${name} form.`,
+    );
+  },
+});
 ---
 
 <Layout
@@ -32,317 +43,6 @@ const { Content: About } = await render(about!);
 	description={openGraph.home.description}
 	pagefindIgnore
 >
-<<<<<<< HEAD
-  <script
-    src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-    async
-    defer></script>
-  <div class="layout-grid-left" slot="left">
-    <Card class="flex-col-card">
-      <ImageGlow
-        quality={100}
-        width={120}
-        height={120}
-        src={ProfilePicture}
-        alt="Louis looking out of a window"
-        loading="eager"
-      />
-      <p class="title">{name}</p>
-      <p class="subtitle">
-        {subtitle}
-        <a href="https://linktr.ee/johnnyfinchdev" target="_blank"
-          >JohnnyFinchDev</a
-        >
-      </p>
-      <ul class="overview-list">
-        {
-          quickInfo.map((info) => (
-            <li>
-              <Icon
-                type={info.data.icon.type}
-                name={info.data.icon.name as any}
-                width={24}
-                height={24}
-                class="glow-icon"
-              />
-              <span>{info.data.text}</span>
-            </li>
-          ))
-        }
-      </ul>
-    </Card>
-    <Card>
-      <h3 class="no-mt">Redes Socialaes</h3>
-      <ul class="overview-list">
-        {
-          socials.map((item) => (
-            <li>
-              <a href={item.data.link} class="socials-link">
-                <Icon
-                  type={item.data.icon.type}
-                  name={item.data.icon.name as any}
-                  width={24}
-                  height={24}
-                  class="glow-icon"
-                />
-                <span>{item.data.text}</span>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </Card>
-  </div>
-  <div class="layout-grid-right" slot="right">
-    <Card>
-      <div class="header-container">
-        <Icon
-          type="lucide"
-          name="info"
-          width={24}
-          height={24}
-          class="glow-icon"
-        />
-        <h2>Información</h2>
-      </div>
-      <div class="prose">
-        <About />
-      </div>
-    </Card>
-    <Card>
-      <div class="header-container">
-        <Icon
-          type="lucide"
-          name="rss"
-          width={24}
-          height={24}
-          class="glow-icon"
-        />
-        <h2>Últimos posts</h2>
-      </div>
-      <div class="content-container">
-        {
-          posts.length === 0 ? (
-            <Message resource="posts" />
-          ) : (
-            posts
-              .sort(
-                (a, b) =>
-                  b.data.createdAt.getTime() - a.data.createdAt.getTime(),
-              )
-              .slice(0, 2)
-              .map((post) => (
-                <a href={`/blog/${post.id}`} class="post-container">
-                  <div class="post-header">
-                    <h3>{post.data.title}</h3>
-                    <span class="post-date">
-                      {post.data.createdAt.toLocaleDateString()}
-                    </span>
-                  </div>
-                  <span>{post.data.description}</span>
-                </a>
-              ))
-          )
-        }
-      </div>
-    </Card>
-    <Card>
-      <div class="header-container">
-        <Icon
-          type="lucide"
-          name="folder-git"
-          width={24}
-          height={24}
-          class="glow-icon"
-        />
-        <h2>Últimos proyectos</h2>
-      </div>
-      <div class="content-container">
-        {
-          projects.length === 0 ? (
-            <Message resource="proyectos" />
-          ) : (
-            projects
-              .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-              .slice(0, 2)
-              .map((project) => (
-                <a href={`/projects/${project.id}`} class="post-container">
-                  <div class="post-header">
-                    <h3>{project.data.title}</h3>
-                    <span class="post-date">
-                      {project.data.date.toLocaleDateString()}
-                    </span>
-                  </div>
-                  <span>{project.data.description}</span>
-                </a>
-              ))
-          )
-        }
-      </div>
-    </Card>
-    <Card>
-      <div class="header-container">
-        <Icon
-          type="lucide"
-          name="swords"
-          width={24}
-          height={24}
-          class="glow-icon"
-        />
-        <h2>Últimos retos</h2>
-      </div>
-      <div class="content-container">
-        {
-          challenges.length === 0 ? (
-            <Message resource="retos" />
-          ) : (
-            challenges
-              .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-              .slice(0, 2)
-              .map((challenge) => (
-                <a href={`/challenges/${challenge.id}`} class="post-container">
-                  <div class="post-header">
-                    <h3>{challenge.data.title}</h3>
-                    <span class="post-date">
-                      {challenge.data.date.toLocaleDateString()}
-                    </span>
-                  </div>
-                  <span>{challenge.data.description}</span>
-                </a>
-              ))
-          )
-        }
-      </div>
-    </Card>
-    <Card>
-      <div class="header-container">
-        <Icon
-          type="lucide"
-          name="message-square-code"
-          width={24}
-          height={24}
-          class="glow-icon"
-        />
-        <h2>Newsletter</h2>
-      </div>
-      <div class="content-container">
-        <div
-          class="flex flex-wrap items-center w-full max-w-5xl p-5 mx-auto text-left"
-        >
-          <div class="flex-1 w-full mb-5 md:mb-0 md:pr-5 lg:pr-10 md:w-1/2">
-            <h3 class="mb-2 text-2xl font-bold text-gray-200">
-              Suscribete a la Newsletter
-            </h3>
-            <p class="text-gray-500 dark:text-gray-400">
-              Proporcina tu email para mandarte notificaciones sobre <b
-                >eventos</b
-              >, <b>retos</b>, <b>posts</b> y mucho más <em>(nada de spam)</em> sobre
-              la comunidad de Hola Developers! Y si añades tu usuario de <a
-                target="_blank"
-                href="https://discord.gg/wkvYgfGBWW">Discord</a
-              > tendrás un <b>canal exclusivo</b> donde me podrás <b
-                >preguntar lo que quieras</b
-              > sobre programación web.
-            </p>
-          </div>
-          <div class="w-full px-1 md:flex-0 md:w-auto lg:w-1/2">
-            <form id="newsletter-form" name="newsletter" method="POST" action="/api/newsletter">
-              <!-- tags for whatever backend service (e.g. static site form) -->
-              <input type="hidden" name="tags" value="earlyaccess" />
-              <!-- Turnstile will populate this hidden field with the challenge token -->
-              <input type="hidden" name="cf-turnstile-response" />
-
-              <div class="flex flex-col sm:flex-row">
-                <input
-                  type="text"
-                  id="discord"
-                  name="discord"
-                  placeholder="Discord (opcional)"
-                  class="flex-1 px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:[#121212] dark:text-white dark:placeholder-gray-400 dark:border-[#fabfad] dark:focus:ring-gray-900 dark:focus:border-[#fc8e6d]"
-                />
-              </div>
-              <div class="flex flex-col sm:flex-row pt-4">
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  placeholder="Email*"
-                  class="flex-1 px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:[#121212] dark:text-white dark:placeholder-gray-400 dark:border-[#fabfad] dark:focus:ring-gray-900 dark:focus:border-[#fc8e6d]"
-                  required
-                />
-              </div>
-              <div class="flex flex-col sm:flex-row pt-4">
-                <div class="relative group m-auto">
-                  <div
-                    class="absolute transitiona-all duration-1000 opacity-70 -inset-px bg-linear-to-r from-[#ff7b72] via-[#ffa657] to-[#f48866] rounded-xl blur-lg group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200 animate-tilt"
-                  >
-                  </div>
-                  <div
-                    class="cf-turnstile"
-                    data-sitekey="0x4AAAAAAClyFYbfeJSuMetM"
-                    data-theme="dark"
-                    data-size="normal"
-                  >
-                  </div>
-                  <button
-                    type="submit"
-                    class="relative inline-flex flex-1 px-3 py-2 text-white text-lg bg-gray-900 rounded-md sm:mt-0 sm:w-auto whitespace-nowrap dark:bg-gray-900"
-                  >
-                    Suscribirse
-                  </button>
-                </div>
-              </div>
-            </form>
-            <div id="newsletter-status" class="mt-4 text-center text-sm text-green-500"></div>
-          </div>
-          <input type="hidden" name="form-name" value="newsletter" />
-        </div>
-      </div>
-    </Card>
-
-    <!-- frontend script for handling form without navigating away -->
-    <script type="module">
-      const form = document.getElementById('newsletter-form');
-      const statusEl = document.getElementById('newsletter-status');
-
-      if (form) {
-        form.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          statusEl.textContent = ''; // reset
-
-          const data = new FormData(form);
-          try {
-            const res = await fetch(form.action, {
-              method: 'POST',
-              body: data,
-            });
-            if (!res.ok) {
-              throw new Error('HTTP ' + res.status);
-            }
-            const json = await res.json();
-            if (json.success) {
-              statusEl.textContent = '¡Te has suscrito correctamente!';
-              statusEl.classList.remove('text-red-500');
-              statusEl.classList.add('text-green-500');
-              form.reset();
-              // reset turnstile widget if present
-              if (window.turnstile) window.turnstile.reset();
-            } else {
-              statusEl.textContent = 'Error: ' + (json.error || 'no se pudo suscribir');
-              statusEl.classList.remove('text-green-500');
-              statusEl.classList.add('text-red-500');
-            }
-          } catch (err) {
-            statusEl.textContent = 'Error de red, inténtalo nuevamente.';
-            statusEl.classList.remove('text-green-500');
-            statusEl.classList.add('text-red-500');
-            console.error(err);
-          }
-        });
-      }
-    </script>
-  </div>
-=======
 	<div class="layout-grid-left" slot="left">
 		<Card class="flex-col-card">
 			<ImageGlow quality={100} width={120} height={120} src={ProfilePicture} alt="Louis looking out of a window" loading='eager' />
@@ -449,7 +149,7 @@ const { Content: About } = await render(about!);
 						</p>
 					</div>
 					<div class="w-full px-1 md:flex-0 md:w-auto lg:w-1/2">
-						<form name="newsletter" method="POST">
+						<form data-static-form-name="newsletter">
 							<input type="hidden" name="tags" value="earlyaccess">
 							<div class="flex flex-col sm:flex-row">
 								<input type="text" id="discord" name="discord" placeholder="Discord (opcional)" class="flex-1 px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:[#121212] dark:text-white dark:placeholder-gray-400 dark:border-[#fabfad] dark:focus:ring-gray-900 dark:focus:border-[#fc8e6d]">
@@ -472,5 +172,4 @@ const { Content: About } = await render(about!);
 		</div>
 		</Card>
 	</div>
->>>>>>> parent of b71c149 (Configuración inicial del captcha turnstile)
 </Layout>
