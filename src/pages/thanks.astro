@@ -1,0 +1,74 @@
+---
+import Card from '../components/Card.astro';
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<Layout
+	title="¡Gracias por suscribirse!"
+	description="Tu suscripción al newsletter ha sido procesada correctamente."
+	pagefindIgnore
+>
+	<div class="layout-grid-left" slot="left">
+		<!-- Empty left column for layout consistency -->
+	</div>
+	<div class="layout-grid-right" slot="right">
+		<Card>
+			<div class="header-container">
+				<Icon type='lucide' name="check-circle" width={24} height={24} class='glow-icon' />
+				<h2>¡Gracias por suscribirse!</h2>
+			</div>
+			<div class="prose">
+				<p>Tu suscripción al newsletter de <strong>Hola Developers!</strong> ha sido procesada correctamente.</p>
+				
+				<p>A partir de ahora recibirás notificaciones sobre:</p>
+				<ul>
+					<li>Nuevos posts y tutoriales</li>
+					<li>Retos de programación</li>
+					<li>Proyectos destacados</li>
+					<li>Eventos de la comunidad</li>
+				</ul>
+
+				<p>
+					Si proporcionaste tu usuario de <a target="_blank" href="https://discord.gg/wkvYgfGBWW">Discord</a>, 
+					pronto tendrás acceso a un canal exclusivo donde podrás resolver tus dudas sobre programación web.
+				</p>
+
+				<p style="margin-top: 2rem;">
+					<a href="/" style="display: inline-block; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #ff7b72 0%, #ffa657 50%, #f48866 100%); color: white; border-radius: 0.375rem; text-decoration: none; font-weight: 500;">
+						Volver al inicio
+					</a>
+				</p>
+			</div>
+		</Card>
+	</div>
+</Layout>
+
+<style>
+	:global(.prose) {
+		color: #d4d4d8;
+	}
+
+	:global(.prose p) {
+		margin: 1rem 0;
+	}
+
+	:global(.prose ul) {
+		margin: 1rem 0;
+		padding-left: 1.5rem;
+	}
+
+	:global(.prose li) {
+		margin: 0.5rem 0;
+	}
+
+	:global(.prose a) {
+		color: #fc8e6d;
+		text-decoration: underline;
+		transition: color 0.2s;
+	}
+
+	:global(.prose a:hover) {
+		color: #ffa657;
+	}
+</style>
