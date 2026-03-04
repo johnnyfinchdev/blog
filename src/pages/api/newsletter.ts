@@ -64,6 +64,21 @@ export const POST: APIRoute = async (context) => {
 			await kv.put(emailListKey, JSON.stringify(emailList));
 		}
 
+		// Guardar email con discord si está disponible
+		if (discord) {
+			const discordEmailListKey = 'discordEmail:list';
+			const existingDiscordList = (await kv.get(discordEmailListKey)) || '[]';
+			const discordEmailList = JSON.parse(existingDiscordList) as Array<{ email: string; discord: string }>;
+
+			// Verificar si el email ya existe en la lista de discord
+			const emailExists = discordEmailList.some(item => item.email === email);
+			
+			if (!emailExists) {
+				discordEmailList.push({ email, discord });
+				await kv.put(discordEmailListKey, JSON.stringify(discordEmailList));
+			}
+		}
+
 		return new Response(
 			JSON.stringify({ success: true, message: '¡Te has suscrito correctamente!' }),
 			{ status: 200, headers: { 'Content-Type': 'application/json' } }
