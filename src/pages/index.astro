@@ -1,7 +1,7 @@
 ---
 import "../styles/index.css";
 
-import ProfilePicture from "../assets/pfp.png";
+import ProfilePicture from "../assets/pfp.jpg";
 
 import Card from "../components/Card.astro";
 import Layout from "../layouts/Layout.astro";
@@ -38,8 +38,6 @@ const { Content: About } = await render(about!);
     <Card class="flex-col-card">
       <ImageGlow
         quality={100}
-        width={120}
-        height={120}
         src={ProfilePicture}
         alt="Louis looking out of a window"
         loading="eager"
