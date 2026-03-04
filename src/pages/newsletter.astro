@@ -1,0 +1,49 @@
+---
+import Card from '../components/Card.astro';
+import Layout from '../layouts/Layout.astro';
+import NewsletterCard from '../components/NewsletterCard.astro';
+---
+
+<Layout
+	title="¡Gracias por suscribirse!"
+	description="Tu suscripción al newsletter ha sido procesada correctamente."
+	pagefindIgnore
+>
+	<div class="layout-grid-left" slot="left">
+		<!-- Empty left column for layout consistency -->
+	</div>
+	<div class="layout-grid-right" slot="right">
+		<Card>
+			<NewsletterCard></NewsletterCard>
+		</Card>
+	</div>
+</Layout>
+
+<style>
+	:global(.prose) {
+		color: #d4d4d8;
+	}
+
+	:global(.prose p) {
+		margin: 1rem 0;
+	}
+
+	:global(.prose ul) {
+		margin: 1rem 0;
+		padding-left: 1.5rem;
+	}
+
+	:global(.prose li) {
+		margin: 0.5rem 0;
+	}
+
+	:global(.prose a) {
+		color: #fc8e6d;
+		text-decoration: underline;
+		transition: color 0.2s;
+	}
+
+	:global(.prose a:hover) {
+		color: #ffa657;
+	}
+</style>
