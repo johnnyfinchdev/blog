@@ -9,6 +9,6 @@
     "directory": "dist"
   },
   "kv_namespaces": [
-    { "binding": "NEWSLETTER_DB", "id": "xxxxxxxxxxxxxxxxxxxxxx" }
+    { "binding": "NEWSLETTER_DB", "id": "NEWSLETTER_DB" }
   ]
 }
