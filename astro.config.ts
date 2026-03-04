@@ -13,7 +13,7 @@ import { spectreDark } from './src/ec-theme';
 const config = defineConfig({
   site: 'https://holadevelopers.blog/',
   // switch to server output so API routes and POST handlers work
-  output: 'server',
+  output: 'static',
   integrations: [
     expressiveCode({
       themes: [spectreDark],
