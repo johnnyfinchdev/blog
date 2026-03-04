@@ -114,6 +114,10 @@ export const optionsSchema = z.object({
      */
     home: openGraphOptionsSchema,
     /**
+     * Open Graph meta tags for the image.
+     */
+    image: openGraphOptionsSchema,
+    /**
      * Open Graph meta tags for the blog page.
      */
     blog: openGraphOptionsSchema,
@@ -157,6 +161,7 @@ export default function integration(options: z.infer<typeof optionsSchema>): Ast
     export const themeColor = ${JSON.stringify(validatedOptions.themeColor ?? '#f48866')};
     export const twitterHandle = ${JSON.stringify(validatedOptions.twitterHandle)};
     export const openGraph = {
+      image: ${JSON.stringify(validatedOptions.openGraph.image)}
       home: ${JSON.stringify(validatedOptions.openGraph.home)},
       blog: ${JSON.stringify(validatedOptions.openGraph.blog)},
       projects: ${JSON.stringify(validatedOptions.openGraph.projects)},
