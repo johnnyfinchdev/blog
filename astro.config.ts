@@ -23,9 +23,6 @@ const config = defineConfig({
       name: 'Hola Developers!',
       subtitle: 'by',
       openGraph: {
-        image:{
-          title: '../blog/src/assets/pfp.jpg',
-        },
         home: {
           title: `Hola Developers!'s Blog`,
           description: 'Un blog para personas que aman la programación y disfrutan explorando nuevas posibilidades'
