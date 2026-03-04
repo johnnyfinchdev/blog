@@ -48,6 +48,7 @@ const config = defineConfig({
         reactionsEnabled: true,
         emitMetadata: false,
         inputPosition: 'top',
+        theme:"catppuccin_mocha",
         lang: 'es',
         loading: 'lazy',
       }
