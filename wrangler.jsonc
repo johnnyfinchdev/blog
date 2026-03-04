@@ -9,6 +9,6 @@
     "directory": "dist"
   },
   "kv_namespaces": [
-    { "binding": "NEWSLETTER_DB", "id": "3a8eed8f9a5c4b2c9bcf2760289ca25f"}
+    { "binding": "KV_BINDING", "id": "${{ env.KV_NAMESPACE }}" }
   ]
 }
