@@ -8,7 +8,4 @@
     "binding": "ASSETS",
     "directory": "dist"
   },
-  "kv_namespaces": [
-    { "binding": "NEWSLETTER_DB", "id": "${{ env.KV_NAMESPACE_ID }}" }
-  ]
 }
