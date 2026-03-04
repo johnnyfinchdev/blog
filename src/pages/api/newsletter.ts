@@ -14,7 +14,7 @@ export const POST: APIRoute = async (context) => {
 		// Obtener los datos del JSON
 		const body = await context.request.json();
 		const email = body.email as string;
-		const discord = body.discord as string | null;
+		let discord = body.discord as string | null;
 
 		// Validar email
 		if (!email || !email.includes('@')) {
@@ -22,6 +22,11 @@ export const POST: APIRoute = async (context) => {
 				JSON.stringify({ success: false, error: 'Email inválido' }),
 				{ status: 400, headers: { 'Content-Type': 'application/json' } }
 			);
+		}
+
+		// Limpiar discord - si está vacío, convertir a null
+		if (!discord || discord.trim() === '') {
+			discord = null;
 		}
 
 		// Obtener el binding de KV desde el contexto de Cloudflare
@@ -36,25 +41,7 @@ export const POST: APIRoute = async (context) => {
 			);
 		}
 
-		// Crear una entrada única con timestamp
-		const subscriber: NewsletterSubscriber = {
-			email,
-			discord: discord || undefined,
-			timestamp: Date.now(),
-		};
-
-		// Usar el email como clave (puede guardar múltiples suscripciones con un timestamp)
-		const key = `subscriber:${email}:${Date.now()}`;
-
-		// Guardar en KV
-		await kv.put(key, JSON.stringify(subscriber), {
-			metadata: {
-				email,
-				subscribedAt: new Date().toISOString(),
-			},
-		});
-
-		// También guardar una lista de todos los emails para búsqueda rápida
+		// Guardar en la lista de todos los emails (subscribers:list)
 		const emailListKey = 'subscribers:list';
 		const existingList = (await kv.get(emailListKey)) || '[]';
 		const emailList = JSON.parse(existingList) as string[];
