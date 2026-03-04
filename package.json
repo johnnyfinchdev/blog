@@ -9,7 +9,7 @@
     "start": "node dist/server/entry.mjs",
     "preview": "astro preview",
     "astro": "astro",
-    "postbuild": "pagefind --site dist/client || true && echo '_worker.js' > dist/.assetsignore",
+    "postbuild": "pagefind --site dist || true && echo '_worker.js' > dist/.assetsignore",
     "deploy": "wrangler deploy"
   },
   "dependencies": {
