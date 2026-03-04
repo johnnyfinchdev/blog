@@ -1,42 +1,20 @@
-![Spectre, a terminal-inspired theme for Astro.](./images/README.png)
+Hola Developers! es un blog de código abierto para unir a una comunidad de programación web. Para la estética usa una plantilla llamada Spectre.
+Spectre es un tema inspirado en terminal para Astro, creado con TypeScript y Astro por [ouisescher](https://github.com/louisescher) y modificado por [johnnyfinchdev](https://github.com/johnnyfinchdev)
 
-Spectre is a terminal-inspired theme for Astro, built using TypeScript and Astro.
+## Contribuye
+Puedes hacer libremente un fork de este proyecto, clonarlo, modificarlo, o lo que quieras, esto es [Libre Source](https://holadevelopers.blog/blog/filosofia/)
 
-## Getting Started
-
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/louisescher/spectre/tree/master)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/louisescher/spectre/tree/master)
-
-Alternatively, you can create a new Astro project with Spectre like this:
-
+Para ejecutar el proyecto es:
 ```bash
-# npm
-npm create astro@latest -- --template louisescher/spectre
-
-# pnpm
-pnpm create astro@latest --template louisescher/spectre
-
-# yarn
-yarn create astro --template louisescher/spectre
+npm run dev
 ```
+### ¿Puedes subir posts?
+Tal vez puedes sugerir algún post o que hable de cierto tema, pero en principio quien tiene puede crear post y publicarlos soy yo. Si es algo que se puede mucho, podría crear una propiedad nueva llamada, autor y meter posts que la gente haga, con su respectivo crédito. Permitir que la gente pueda subir posts va de la mano con la [filosofía](https://holadevelopers.blog/blog/filosofia/) del blog, pero por ahora solo yo podré subir posts.
 
-## Features
+### Vive Coding, ¿Permitido o no?
+Las PRs se revisará muy bien lo que se modifica, obviamente podeís usar IA generativa para programar, pero yo no la recomiendo mucho, por que muchas veces no se aprende mucho solo copiando y pegando, lo digo por experiencia propia. Tal vez si fuera estrictamente necesaria, pero convendría no usarla, no solo por ética, por qué eso es cuestión de cada persona, si no por el retraso de aprendizaje que se consigue y los peligros de las alucinaciones de la IA Generativa 
 
-- 100 / 100 Lighthouse performance
-- Responsive for all screen sizes
-- Fully accessible
-- Type-Safe
-- Auto-generated sitemap
-- Markdown / MDX Support
-- Builds on content collections
-- Search powered by [pagefind](https://pagefind.app)
-- Comments powered by [giscus](https://giscus.app) (can be turned off)
-- More!
 
-## Curious?
+## Créditos
 
-Head over to [the preview page](https://spectre.lou.gg) to find out more!
-
-### Spectre Integration
-
-If you want to know more about how the custom integration that is used in the `astro.config.ts` file works, head over to the [integration's own README](https://github.com/louisescher/spectre/tree/master/package)!
+[Repo original](https://github.com/louisescher/spectre/tree/master) de la plantilla usada para crear el blog.
