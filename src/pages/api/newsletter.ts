@@ -35,19 +35,29 @@ export const POST: APIRoute = async (context) => {
 			);
 		}
 
-		// Guardar en la lista de todos los emails (subscribers:list) como CSV
+		// Guardar en la lista de todos los emails (subscribers:list) con formato multilínea
 		const emailListKey = 'subscribers:list';
-		// Obtenemos el string actual. Si no existe, usamos un string vacío.
-		const existingList = (await kv.get(emailListKey)) || '';
-		// Convertimos el string en array para verificar duplicados
-		// Usamos filter para eliminar posibles elementos vacíos si el string termina en ";"
-		const emailList = existingList.split(';').filter((e: string) => e.trim() !== '');
-		if (!emailList.includes(email)) {
-			// Añadimos el nuevo email
-			emailList.push(email);
-			// Lo volvemos a unir con ";" y nos aseguramos de que termine en ";"
-			const updatedCSV = emailList.join(';') + ';';
-			await kv.put(emailListKey, updatedCSV);
+
+		// 1. Obtenemos el contenido actual. Si no existe, inicializamos con el encabezado.
+		let existingContent = (await kv.get(emailListKey)) || 'email,\n';
+
+		// 2. Extraemos los emails actuales para comprobar duplicados.
+		// Separamos por saltos de línea y limpiamos comas y espacios.
+		const lines = existingContent
+			.split('\n')
+			.map(line => line.replace(',', '').trim())
+			.filter(line => line !== '' && line !== 'email');
+
+		if (!lines.includes(email)) {
+			// 3. Si el contenido no termina en salto de línea, se lo añadimos antes de insertar
+			if (!existingContent.endsWith('\n')) {
+				existingContent += '\n';
+			}
+
+			// 4. Añadimos el nuevo email con su coma y salto de línea
+			const updatedContent = `${existingContent}${email},\n`;
+
+			await kv.put(emailListKey, updatedContent);
 		}
 
 		// Guardar email con discord si está disponible
