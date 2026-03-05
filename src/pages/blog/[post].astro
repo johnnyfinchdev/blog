@@ -10,6 +10,7 @@ import type { CollectionEntry } from "astro:content";
 import { render } from "astro:content";
 import { getCollection } from "astro:content";
 import { giscus } from "spectre:globals";
+import BucketVideo from "../../components/BucketVideo.astro";
 /**
  * Estimates the time it takes to read a post in minutes based on:
  * - A reading speed of 200 words per minute
@@ -107,11 +108,8 @@ const { Content, headings } = await render(post);
       <Content />
       {
         post.data.video && (
-          <div class="div-video">
-            <video class="article-video" controls>
-              <source src={post.data.video} type="video/mp4" />
-              Tu navegador no soporta el elemento de video.
-            </video>
+          <div style="display:flex; justify-content: center;">
+            <BucketVideo resource={post.data.video}/>
           </div>
         )
       }
@@ -157,9 +155,7 @@ const { Content, headings } = await render(post);
               }
               data-emit-metadata={giscus.emitMetadata === true ? "1" : "0"}
               data-input-position={giscus.commentsInput}
-              data-theme={
-                giscus.theme
-              }
+              data-theme={giscus.theme}
               data-lang={giscus.lang}
               data-loading="lazy"
               crossorigin="anonymous"

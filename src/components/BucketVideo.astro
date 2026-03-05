@@ -1,0 +1,404 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"div"> {}
+
+const { class: className, resource = "recurso", ...props } = Astro.props;
+---
+
+<style>
+  .video-container {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .article-video {
+    width: 100%;
+    display: block;
+  }
+
+  /* Configuración para videos horizontales (YouTube style) */
+  .video-container.is-horizontal {
+    max-width: 800px;
+  }
+
+  /* Configuración para videos verticales (TikTok/Reels style) */
+  .video-container.is-vertical {
+    max-width: 400px; /* En PC se verá más estrecho y elegante, no gigante */
+    margin: 0 auto;
+  }
+
+  .video-container.is-vertical .article-video {
+    aspect-ratio: 9 / 16;
+  }
+
+  /* Contenedor de controles */
+  .custom-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    opacity: 0; /* Ocultos por defecto */
+    transition: opacity 0.3s;
+  }
+
+  .video-container:hover .custom-controls {
+    opacity: 1; /* Aparecen al hacer hover */
+  }
+
+  /* Contenedor de la barra de progreso (la "vía") */
+  .progress-container {
+    position: relative;
+    width: 100%;
+    height: 8px; /* Un poco más gruesa */
+    background: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    border-radius: 4px;
+  }
+
+  /* La barra de progreso rellena (lo ya reproducido) */
+  .progress-bar {
+    position: absolute;
+    left: 0;
+    height: 100%;
+    background: #ff7349; /* Color principal */
+    border-radius: 4px;
+    width: 0%; /* Se actualiza con JS */
+  }
+
+  .buttons {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #000000;
+  }
+
+  .control-btn {
+    background: none;
+    border: none;
+    color: #ffb197;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+  /* EL CÍRCULO INDICADOR (SEEK HANDLE) */
+  .seek-handle {
+    position: absolute;
+    top: 50%; /* Centrado verticalmente */
+    transform: translate(-50%, -50%); /* Centra el punto medio del círculo */
+    left: 0%; /* Se actualiza con JS */
+
+    width: 16px;
+    height: 16px;
+    background-color: #ffb197;
+    border: 2px solid transparent;
+    border-radius: 50%; /* Hace que sea un círculo */
+
+    opacity: 0; /* Oculto por defecto */
+    transition:
+      opacity 0.2s,
+      transform 0.1s,
+      width 0.1s,
+      height 0.1s;
+    pointer-events: none; /* No queremos interactuar *con* el círculo, sino con la barra */
+  }
+
+  /* Efectos al pasar el ratón por el CONTENEDOR DE LA BARRA DE PROGRESO */
+  .progress-container:hover .seek-handle {
+    opacity: 1; /* Círculo visible */
+  }
+
+  /* Un efecto extra: el círculo se hace un poco más grande cuando pasas el ratón por encima */
+  .progress-container:hover .seek-handle {
+    width: 20px;
+    height: 20px;
+    background-color: #ffb197;
+  }
+
+  .time-display {
+    font-family:
+      "Courier New", Courier, monospace; /* Fuente monoespaciada para que no "salte" el texto al cambiar los números */
+    font-size: 0.85rem;
+    color: #fff;
+    min-width: 100px; /* Evita que los botones se muevan cuando el tiempo cambia */
+    text-align: center;
+  }
+
+  /* Contenedor del volumen */
+  .volume-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  #vol-icon {
+    font-size: 1.2rem;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  /* La barra de volumen */
+  #volume {
+    width: 80px;
+    cursor: pointer;
+    /* CAMBIA AQUÍ EL COLOR: */
+    accent-color: #ffb197;
+    border-radius: 5px;
+    background: rgba(255, 126, 126, 0.315);
+    height: 5px;
+    border-radius: 5px;
+  }
+
+  /* Cuando el contenedor está en pantalla completa */
+  .video-container:fullscreen {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: black;
+  }
+
+  .video-container:fullscreen .article-video {
+    max-height: 100%;
+    width: auto; /* Mantiene la proporción original en pantallas raras */
+  }
+  /* El contenedor de la fila de controles */
+  .controls-row {
+    display: flex;
+    align-items: center;
+    width: 100%; /* Ocupa todo el ancho disponible */
+    gap: 15px; /* Espacio entre los demás botones */
+  }
+
+  /* El botón de pantalla completa */
+  #fullscreen-btn {
+    margin-left: auto; /* Empuja este elemento todo lo posible a la derecha */
+    padding-right: 5px; /* Un poco de aire al final */
+  }
+
+  #fullscreen-btn:hover {
+    transform: scale(1.2);
+    transition: transform 0.2s none;
+    color: #ffd4c4;
+  }
+</style>
+
+<div class="video-container">
+  <video class="article-video">
+    <source src={resource} type="video/mp4" />
+  </video>
+
+  <div class="custom-controls">
+    <div class="progress-container">
+      <div class="progress-bar"></div>
+      <div class="seek-handle"></div>
+    </div>
+
+    <div class="buttons">
+      <button id="play-pause" class="control-btn">▶</button>
+      <span class="time-display">00:00 / 00:00</span>
+      <div class="volume-control">
+        <span id="vol-icon">🔊</span>
+        <input
+          type="range"
+          id="volume"
+          min="0"
+          max="1"
+          step="0.1"
+          value="0.4"
+        />
+      </div>
+      <button id="fullscreen-btn" class="control-btn">⛶</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const video = document.querySelector(".article-video");
+  const progressBar = document.querySelector(".progress-bar");
+  const progressContainer = document.querySelector(".progress-container");
+  const seekHandle = document.querySelector(".seek-handle");
+  const playBtn = document.getElementById("play-pause");
+  const volumeSlider = document.getElementById("volume");
+  const fullscreenBtn = document.getElementById("fullscreen-btn");
+  const videoContainer = document.querySelector(".video-container");
+
+  // Actualizar el tiempo total cuando el video cargue sus datos
+  video?.addEventListener("loadedmetadata", () => {
+    const totalTime = formatTime(video.duration);
+    const currentTime = formatTime(video.currentTime);
+    timeDisplay.textContent = `${currentTime} / ${totalTime}`;
+  });
+
+  // Función principal para actualizar la interfaz (barra y círculo)
+  function updateProgress() {
+    if (!isNaN(video.duration)) {
+      const percentage = (video.currentTime / video.duration) * 100;
+
+      // Actualizamos el ancho de la barra rellena
+      progressBar.style.width = `${percentage}%`;
+
+      // Actualizamos la posición del círculo (coincidiendo con el final de la barra)
+      seekHandle.style.left = `${percentage}%`;
+    }
+  }
+
+  // Escuchamos el evento timeupdate para mover la barra/círculo
+  video?.addEventListener("timeupdate", updateProgress);
+
+  // Lógica de ir a en la barra de vídeo
+  function seekTo(e: MouseEvent) {
+    const rect = progressContainer.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    let percentage = x / rect.width;
+
+    // Limitamos para evitar errores de redondeo
+    percentage = Math.max(0, Math.min(percentage, 1));
+
+    if (!isNaN(video.duration)) {
+      video.currentTime = percentage * video.duration;
+    }
+  }
+
+  // Click en la barra de progreso
+  progressContainer?.addEventListener("click", seekTo);
+
+  // Lógica para arrastrar el círculo
+  let isDragging = false;
+
+  progressContainer?.addEventListener("mousedown", () => (isDragging = true));
+  window.addEventListener("mouseup", () => (isDragging = false));
+
+  window.addEventListener("mousemove", (e) => {
+    if (isDragging) {
+      seekTo(e);
+    }
+  });
+
+  // Lógica simple de Play/Pause
+  playBtn?.addEventListener("click", () => {
+    if (video.paused) {
+      video.play();
+      playBtn.textContent = "⏸";
+    } else {
+      video.pause();
+      playBtn.textContent = "▶";
+    }
+  });
+
+  // Controlar el volumen
+  volumeSlider?.addEventListener("input", (e) => {
+    const val = e.target.value;
+    video.volume = val;
+
+    if (val == 0) {
+      volIcon.textContent = "🔇";
+    } else if (val < 0.5) {
+      volIcon.textContent = "🔉";
+    } else {
+      volIcon.textContent = "🔊";
+    }
+  });
+  const timeDisplay = document.querySelector(".time-display");
+
+  // Actualizar el tiempo total cuando el video cargue sus datos
+  video?.addEventListener("loadedmetadata", () => {
+    const totalTime = formatTime(video.duration);
+    const currentTime = formatTime(video.currentTime);
+    timeDisplay.textContent = `${currentTime} / ${totalTime}`;
+  });
+
+  //  Actualizar el tiempo actual mientras el video avanza
+  video.addEventListener("timeupdate", () => {
+    if (!isNaN(video.duration)) {
+      const totalTime = formatTime(video.duration);
+      const currentTime = formatTime(video.currentTime);
+      timeDisplay.textContent = `${currentTime} / ${totalTime}`;
+
+      // Aquí también va la lógica de la barra y el círculo que ya tenías
+      const percentage = (video.currentTime / video.duration) * 100;
+      progressBar.style.width = `${percentage}%`;
+      seekHandle.style.left = `${percentage}%`;
+    }
+  });
+
+  function formatTime(seconds: number) {
+    const minutes = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    // Usamos padStart para que siempre tenga dos dígitos (02:05 en lugar de 2:5)
+    return `${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  }
+
+  const volIcon = document.getElementById("vol-icon");
+
+  // Click en el vídeo play/pause
+  video?.addEventListener("click", () => {
+    if (video.paused) {
+      video.play();
+      playBtn.textContent = "⏸";
+    } else {
+      video.pause();
+      playBtn.textContent = "▶";
+    }
+  });
+
+  // Mute al hacer click en el icono
+  volIcon?.addEventListener("click", () => {
+    if (video.volume > 0) {
+      video.dataset.lastVol = video.volume; // Guardamos el volumen actual
+      video.volume = 0;
+      volumeSlider.value = 0;
+      volIcon.textContent = "🔇";
+    } else {
+      const lastVol = video.dataset.lastVol || 1;
+      video.volume = lastVol;
+      volumeSlider.value = lastVol;
+      volIcon.textContent = "🔊";
+    }
+  });
+
+  fullscreenBtn.addEventListener("click", () => {
+    if (!document.fullscreenElement) {
+      // Si no hay nada en pantalla completa, entramos
+      // Usamos el contenedor para que se vean los controles personalizados
+      videoContainer.requestFullscreen().catch((err) => {
+        alert(`Error al intentar activar pantalla completa: ${err.message}`);
+      });
+      fullscreenBtn.textContent = "⛶";
+    } else {
+      // Si ya estamos, salimos
+      document.exitFullscreen();
+      fullscreenBtn.textContent = "⛶"; 
+    }
+  });
+
+  //  Doble clic en el video para pantalla completa (estilo YouTube)
+  video?.addEventListener("dblclick", () => {
+    fullscreenBtn?.click();
+  });
+
+  video?.addEventListener("loadedmetadata", () => {
+    const width = video.videoWidth;
+    const height = video.videoHeight;
+    const container = document.querySelector(".video-container");
+
+    if (height > width) {
+      // Es un video VERTICAL (Portrait)
+      container.classList.add("is-vertical");
+      container.classList.remove("is-horizontal");
+    } else {
+      // Es un video HORIZONTAL (Landscape)
+      container.classList.add("is-horizontal");
+      container.classList.remove("is-vertical");
+    }
+  });
+</script>
