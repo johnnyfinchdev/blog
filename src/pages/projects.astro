@@ -30,7 +30,7 @@ const projects = await getCollection('projects');
 		<Card>
 			<div class="header-container">
 				<Icon type='lucide' name="folder-git" width={24} height={24} class='glow-icon' />
-				<h2>Latest Projects</h2>
+				<h2>Últimos proyectos</h2>
 			</div>
 			<div class="content-container">
 				{projects.length === 0 ? <Message resource='posts'/> : projects.sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).map((post) => (

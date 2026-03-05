@@ -29,7 +29,7 @@ const config = defineConfig({
         },
         blog: {
           title: 'Blog',
-          description: 'Tuturiales y temas interesantes'
+          description: 'Tutoriales y temas interesantes'
         },
         projects: {
           title: 'Projects'
