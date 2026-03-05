@@ -1,11 +1,5 @@
 import type { APIRoute } from 'astro';
 
-interface NewsletterSubscriber {
-	email: string;
-	discord?: string;
-	timestamp: number;
-}
-
 // Marcar como endpoint dinámico (no pre-renderizado)
 export const prerender = false;
 
@@ -41,14 +35,19 @@ export const POST: APIRoute = async (context) => {
 			);
 		}
 
-		// Guardar en la lista de todos los emails (subscribers:list)
+		// Guardar en la lista de todos los emails (subscribers:list) como CSV
 		const emailListKey = 'subscribers:list';
-		const existingList = (await kv.get(emailListKey)) || '[]';
-		const emailList = JSON.parse(existingList) as string[];
-
+		// Obtenemos el string actual. Si no existe, usamos un string vacío.
+		const existingList = (await kv.get(emailListKey)) || '';
+		// Convertimos el string en array para verificar duplicados
+		// Usamos filter para eliminar posibles elementos vacíos si el string termina en ";"
+		const emailList = existingList.split(';').filter((e: string) => e.trim() !== '');
 		if (!emailList.includes(email)) {
+			// Añadimos el nuevo email
 			emailList.push(email);
-			await kv.put(emailListKey, JSON.stringify(emailList));
+			// Lo volvemos a unir con ";" y nos aseguramos de que termine en ";"
+			const updatedCSV = emailList.join(';') + ';';
+			await kv.put(emailListKey, updatedCSV);
 		}
 
 		// Guardar email con discord si está disponible
@@ -59,7 +58,7 @@ export const POST: APIRoute = async (context) => {
 
 			// Verificar si el email ya existe en la lista de discord
 			const emailExists = discordEmailList.some(item => item.email === email);
-			
+
 			if (!emailExists) {
 				discordEmailList.push({ email, discord });
 				await kv.put(discordEmailListKey, JSON.stringify(discordEmailList));
