@@ -84,7 +84,7 @@ const { class: className, ...props } = Astro.props;
               <button
                 id="submit-btn"
                 type="submit"
-                class="relative inline-flex flex-1 px-3 py-2 text-white text-lg bg-gray-900 rounded-md sm:mt-0 sm:w-auto whitespace-nowrap dark:bg-gray-900"
+                class="relative inline-flex flex-1 px-3 py-2 text-white text-lg bg-gray-900 rounded-md sm:mt-0 sm:w-auto whitespace-nowrap dark:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled
               >
                 Suscribirse
@@ -99,18 +99,22 @@ const { class: className, ...props } = Astro.props;
 </Card>
 
 <script>
-  function onTurnstileSuccess(token) {
-    console.log("Turnstile success:", token);
-    document.getElementById("submit-btn").disabled = false;
-  }
-  function onTurnstileError(errorCode) {
-    console.error("Turnstile error:", errorCode);
-    document.getElementById("submit-btn").disabled = true;
-  }
-  function onTurnstileExpired() {
-    console.warn("Turnstile token expired");
-    document.getElementById("submit-btn").disabled = true;
-  }
+  // 1. Definimos las funciones en el objeto window para que Turnstile las encuentre
+  (window as any).onTurnstileSuccess = function(token: string) {
+    const btn = document.getElementById("submit-btn") as HTMLButtonElement;
+    if (btn) btn.disabled = false;
+  };
+
+  (window as any).onTurnstileError = function() {
+    const btn = document.getElementById("submit-btn") as HTMLButtonElement;
+    if (btn) btn.disabled = true;
+  };
+
+  (window as any).onTurnstileExpired = function() {
+    const btn = document.getElementById("submit-btn") as HTMLButtonElement;
+    if (btn) btn.disabled = true;
+  };
+
   document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("contact-form") as HTMLFormElement;
 
@@ -119,6 +123,17 @@ const { class: className, ...props } = Astro.props;
         e.preventDefault();
 
         const formData = new FormData(form);
+
+        const turnstileResponse = formData.get("cf-turnstile-response");
+
+        // 2. Validación extra: Si no hay token, no enviamos nada
+        if (!turnstileResponse) {
+          alert("Por favor, completa el captcha antes de continuar.");
+          return;
+        }
+
+
+
         const submitButton = form.querySelector(
           'button[type="submit"]',
         ) as HTMLButtonElement;
