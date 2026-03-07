@@ -76,11 +76,17 @@ const { class: className, ...props } = Astro.props;
           >
           </div>
           <div class="flex flex-col sm:flex-row pt-4">
-            <div class="relative group m-auto">
+            <div class="relative m-auto">
               <div
-                class="absolute transitiona-all duration-1000 opacity-70 -inset-px bg-linear-to-r from-[#ff7b72] via-[#ffa657] to-[#f48866] rounded-xl blur-lg group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200 animate-tilt"
+                id="submit-glow"
+                class="absolute transition-all duration-1000 opacity-0 -inset-px bg-linear-to-r from-[#ff7b72] via-[#ffa657] to-[#f48866] rounded-xl blur-lg animate-tilt
+                        [#submit-btn:not(:disabled)~&]:opacity-70
+                        [#submit-btn:not(:disabled)~&]:hover:opacity-100
+                        [#submit-btn:not(:disabled)~&]:hover:-inset-1
+                        [#submit-btn:not(:disabled)~&]:hover:duration-200"
               >
               </div>
+
               <button
                 id="submit-btn"
                 type="submit"
@@ -100,17 +106,17 @@ const { class: className, ...props } = Astro.props;
 
 <script>
   // 1. Definimos las funciones en el objeto window para que Turnstile las encuentre
-  (window as any).onTurnstileSuccess = function(token: string) {
+  (window as any).onTurnstileSuccess = function (token: string) {
     const btn = document.getElementById("submit-btn") as HTMLButtonElement;
     if (btn) btn.disabled = false;
   };
 
-  (window as any).onTurnstileError = function() {
+  (window as any).onTurnstileError = function () {
     const btn = document.getElementById("submit-btn") as HTMLButtonElement;
     if (btn) btn.disabled = true;
   };
 
-  (window as any).onTurnstileExpired = function() {
+  (window as any).onTurnstileExpired = function () {
     const btn = document.getElementById("submit-btn") as HTMLButtonElement;
     if (btn) btn.disabled = true;
   };
@@ -131,8 +137,6 @@ const { class: className, ...props } = Astro.props;
           alert("Por favor, completa el captcha antes de continuar.");
           return;
         }
-
-
 
         const submitButton = form.querySelector(
           'button[type="submit"]',
