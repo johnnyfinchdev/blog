@@ -30,8 +30,16 @@ export const POST: APIRoute = async (context) => {
 		// const kv = env.NEWSLETTER_DB;
 		const re = env.RESEND_API_KEY;
 
-				
+		if (!re) {
+			console.error('RESEND binding not found');
+			return new Response(
+				JSON.stringify({ success: false, error: 'Error del servidor' }),
+				{ status: 500, headers: { 'Content-Type': 'application/json' } }
+			);
+		}
+
 		const resend = new Resend(re);
+		console.log(re)
 
 		const { data, error } = await resend.contacts.create({
 			email: 'steve.wozniak@gmail.com',
@@ -39,15 +47,6 @@ export const POST: APIRoute = async (context) => {
 			lastName: 'Wozniak',
 			unsubscribed: false,
 		});
-
-
-		// if (!kv) {
-		// 	console.error('KV binding not found');
-		// 	return new Response(
-		// 		JSON.stringify({ success: false, error: 'Error del servidor' }),
-		// 		{ status: 500, headers: { 'Content-Type': 'application/json' } }
-		// 	);
-		// }
 
 		// // Guardar en la lista de todos los emails (subscribers:list) con formato multilínea
 		// const emailListKey = 'subscribers:list';
