@@ -1,10 +1,12 @@
 import type { APIRoute } from 'astro';
+import { Resend } from 'resend';
 
 // Marcar como endpoint dinámico (no pre-renderizado)
 export const prerender = false;
 
 export const POST: APIRoute = async (context) => {
 	try {
+
 		// Obtener los datos del JSON
 		const body = await context.request.json();
 		const email = body.email as string;
@@ -25,55 +27,67 @@ export const POST: APIRoute = async (context) => {
 
 		// Obtener el binding de KV desde el contexto de Cloudflare
 		const env = context.locals.runtime.env as Record<string, any>;
-		const kv = env.NEWSLETTER_DB;
+		// const kv = env.NEWSLETTER_DB;
+		const re = env.RESEND_API_KEY;
 
-		if (!kv) {
-			console.error('KV binding not found');
-			return new Response(
-				JSON.stringify({ success: false, error: 'Error del servidor' }),
-				{ status: 500, headers: { 'Content-Type': 'application/json' } }
-			);
-		}
+				
+		const resend = new Resend(re);
 
-		// Guardar en la lista de todos los emails (subscribers:list) con formato multilínea
-		const emailListKey = 'subscribers:list';
+		const { data, error } = await resend.contacts.create({
+			email: 'steve.wozniak@gmail.com',
+			firstName: 'Steve',
+			lastName: 'Wozniak',
+			unsubscribed: false,
+		});
 
-		// 1. Obtenemos el contenido actual. Si no existe, inicializamos con el encabezado.
-		let existingContent = (await kv.get(emailListKey)) || 'email,\n';
 
-		// 2. Extraemos los emails actuales para comprobar duplicados.
-		// Separamos por saltos de línea y limpiamos comas y espacios.
-		const lines = existingContent
-			.split('\n')
-			.map(line => line.replace(',', '').trim())
-			.filter(line => line !== '' && line !== 'email');
+		// if (!kv) {
+		// 	console.error('KV binding not found');
+		// 	return new Response(
+		// 		JSON.stringify({ success: false, error: 'Error del servidor' }),
+		// 		{ status: 500, headers: { 'Content-Type': 'application/json' } }
+		// 	);
+		// }
 
-		if (!lines.includes(email)) {
-			// 3. Si el contenido no termina en salto de línea, se lo añadimos antes de insertar
-			if (!existingContent.endsWith('\n')) {
-				existingContent += '\n';
-			}
+		// // Guardar en la lista de todos los emails (subscribers:list) con formato multilínea
+		// const emailListKey = 'subscribers:list';
 
-			// 4. Añadimos el nuevo email con su coma y salto de línea
-			const updatedContent = `${existingContent}${email},\n`;
+		// // 1. Obtenemos el contenido actual. Si no existe, inicializamos con el encabezado.
+		// let existingContent = (await kv.get(emailListKey)) || 'email,\n';
 
-			await kv.put(emailListKey, updatedContent);
-		}
+		// // 2. Extraemos los emails actuales para comprobar duplicados.
+		// // Separamos por saltos de línea y limpiamos comas y espacios.
+		// const lines = existingContent
+		// 	.split('\n')
+		// 	.map(line => line.replace(',', '').trim())
+		// 	.filter(line => line !== '' && line !== 'email');
 
-		// Guardar email con discord si está disponible
-		if (discord) {
-			const discordEmailListKey = 'discordEmail:list';
-			const existingDiscordList = (await kv.get(discordEmailListKey)) || '[]';
-			const discordEmailList = JSON.parse(existingDiscordList) as Array<{ email: string; discord: string }>;
+		// if (!lines.includes(email)) {
+		// 	// 3. Si el contenido no termina en salto de línea, se lo añadimos antes de insertar
+		// 	if (!existingContent.endsWith('\n')) {
+		// 		existingContent += '\n';
+		// 	}
 
-			// Verificar si el email ya existe en la lista de discord
-			const emailExists = discordEmailList.some(item => item.email === email);
+		// 	// 4. Añadimos el nuevo email con su coma y salto de línea
+		// 	const updatedContent = `${existingContent}${email},\n`;
 
-			if (!emailExists) {
-				discordEmailList.push({ email, discord });
-				await kv.put(discordEmailListKey, JSON.stringify(discordEmailList));
-			}
-		}
+		// 	await kv.put(emailListKey, updatedContent);
+		// }
+
+		// // Guardar email con discord si está disponible
+		// if (discord) {
+		// 	const discordEmailListKey = 'discordEmail:list';
+		// 	const existingDiscordList = (await kv.get(discordEmailListKey)) || '[]';
+		// 	const discordEmailList = JSON.parse(existingDiscordList) as Array<{ email: string; discord: string }>;
+
+		// 	// Verificar si el email ya existe en la lista de discord
+		// 	const emailExists = discordEmailList.some(item => item.email === email);
+
+		// 	if (!emailExists) {
+		// 		discordEmailList.push({ email, discord });
+		// 		await kv.put(discordEmailListKey, JSON.stringify(discordEmailList));
+		// 	}
+		// }
 
 		return new Response(
 			JSON.stringify({ success: true, message: '¡Te has suscrito correctamente!' }),
