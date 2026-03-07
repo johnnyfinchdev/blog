@@ -7,8 +7,5 @@
   "assets": {
     "binding": "ASSETS",
     "directory": "dist"
-  },
-  "kv_namespaces": [
-    { "binding": "NEWSLETTER_DB", "id": "d21a55647edc4b939015dd600928e4ef" }
-  ]
+  }
 }
