@@ -36,7 +36,7 @@ export const POST: APIRoute = async (context) => {
 
 		// 3. Enviar email de bienvenida/confirmación
 		const { error: mailError } = await resend.emails.send({
-			from: 'Hola Developers <newsletter@tudominio.com>',
+			from: 'Hola Developers <newsletter@holadevelopers.blog>',
 			to: [email],
 			subject: '¡Bienvenido a la Newsletter! 🚀',
 			html: `
