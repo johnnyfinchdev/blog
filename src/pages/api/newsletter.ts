@@ -9,87 +9,52 @@ export const POST: APIRoute = async (context) => {
 
 		// Obtener los datos del JSON
 		const body = await context.request.json();
-		const email = body.email as string;
-		let discord = body.discord as string | null;
+		const { email, discord } = body;
 
-		// Validar email
+		// 1. Validación básica
 		if (!email || !email.includes('@')) {
-			return new Response(
-				JSON.stringify({ success: false, error: 'Email inválido' }),
-				{ status: 400, headers: { 'Content-Type': 'application/json' } }
-			);
-		}
-
-		// Limpiar discord - si está vacío, convertir a null
-		if (!discord || discord.trim() === '') {
-			discord = null;
+			return new Response(JSON.stringify({ success: false, error: 'Email inválido' }), { status: 400 });
 		}
 
 		// Obtener el binding de KV desde el contexto de Cloudflare
 		const env = context.locals.runtime.env as Record<string, any>;
-		// const kv = env.NEWSLETTER_DB;
-		const re = env.RESEND_API_KEY;
+		const RESEND_KEY = env.RESEND_API_KEY;
 
-		if (!re) {
-			console.error('RESEND binding not found');
-			return new Response(
-				JSON.stringify({ success: false, error: 'Error del servidor' }),
-				{ status: 500, headers: { 'Content-Type': 'application/json' } }
-			);
+		if (!RESEND_KEY) {
+			return new Response(JSON.stringify({ success: false, error: 'Configuración de servidor incompleta' }), { status: 500 });
 		}
 
-		const resend = new Resend(re);
-		console.log(re)
+		const resend = new Resend(RESEND_KEY);
 
-		const { data, error } = await resend.contacts.create({
-			email: 'steve.wozniak@gmail.com',
-			firstName: 'Steve',
-			lastName: 'Wozniak',
+		// 2. Guardar en la Audiencia (Contactos) de Resend
+		// Nota: Asegúrate de tener creado un "Audience" en el panel de Resend y copiar su ID
+		await resend.contacts.create({
+			email: email,
+			firstName: discord || '',
 			unsubscribed: false,
 		});
 
-		// // Guardar en la lista de todos los emails (subscribers:list) con formato multilínea
-		// const emailListKey = 'subscribers:list';
+		// 3. Enviar email de bienvenida/confirmación
+		const { error: mailError } = await resend.emails.send({
+			from: 'Hola Developers <newsletter@tudominio.com>',
+			to: [email],
+			subject: '¡Bienvenido a la Newsletter! 🚀',
+			html: `
+                <h1>¡Hola ${discord || 'Developer'}!</h1>
+                <p>Gracias por suscribirte. A partir de ahora recibirás retos, posts y novedades.</p>
+                ${discord ? `<p>Tu usuario de Discord <strong>${discord}</strong> ha sido registrado para el canal exclusivo.</p>` : ''}
+                <p>Nos vemos en el código.</p>
+            `,
+		});
 
-		// // 1. Obtenemos el contenido actual. Si no existe, inicializamos con el encabezado.
-		// let existingContent = (await kv.get(emailListKey)) || 'email,\n';
 
-		// // 2. Extraemos los emails actuales para comprobar duplicados.
-		// // Separamos por saltos de línea y limpiamos comas y espacios.
-		// const lines = existingContent
-		// 	.split('\n')
-		// 	.map(line => line.replace(',', '').trim())
-		// 	.filter(line => line !== '' && line !== 'email');
-
-		// if (!lines.includes(email)) {
-		// 	// 3. Si el contenido no termina en salto de línea, se lo añadimos antes de insertar
-		// 	if (!existingContent.endsWith('\n')) {
-		// 		existingContent += '\n';
-		// 	}
-
-		// 	// 4. Añadimos el nuevo email con su coma y salto de línea
-		// 	const updatedContent = `${existingContent}${email},\n`;
-
-		// 	await kv.put(emailListKey, updatedContent);
-		// }
-
-		// // Guardar email con discord si está disponible
-		// if (discord) {
-		// 	const discordEmailListKey = 'discordEmail:list';
-		// 	const existingDiscordList = (await kv.get(discordEmailListKey)) || '[]';
-		// 	const discordEmailList = JSON.parse(existingDiscordList) as Array<{ email: string; discord: string }>;
-
-		// 	// Verificar si el email ya existe en la lista de discord
-		// 	const emailExists = discordEmailList.some(item => item.email === email);
-
-		// 	if (!emailExists) {
-		// 		discordEmailList.push({ email, discord });
-		// 		await kv.put(discordEmailListKey, JSON.stringify(discordEmailList));
-		// 	}
-		// }
+		if (mailError) {
+			console.error('Error enviando email:', mailError);
+			// Podrías decidir si fallar aquí o continuar si el contacto se guardó
+		}
 
 		return new Response(
-			JSON.stringify({ success: true, message: '¡Te has suscrito correctamente!' }),
+			JSON.stringify({ success: true }),
 			{ status: 200, headers: { 'Content-Type': 'application/json' } }
 		);
 	} catch (error) {

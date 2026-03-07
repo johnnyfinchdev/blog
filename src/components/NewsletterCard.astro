@@ -44,7 +44,7 @@ const { class: className, ...props } = Astro.props;
         </p>
       </div>
       <div class="w-full px-1 md:flex-0 md:w-auto lg:w-1/2">
-        <form method="POST" id="contact-form">
+        <form id="contact-form">
           <input type="hidden" name="tags" value="earlyaccess" />
           <div class="flex flex-col sm:flex-row">
             <input
@@ -112,28 +112,28 @@ const { class: className, ...props } = Astro.props;
     document.getElementById("submit-btn").disabled = true;
   }
   document.addEventListener("DOMContentLoaded", () => {
-    const form = document.querySelector('[data-static-form-name="newsletter"]');
+    const form = document.getElementById("contact-form") as HTMLFormElement;
+
     if (form) {
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const formData = new FormData(form as HTMLFormElement);
+        const formData = new FormData(form);
         const submitButton = form.querySelector(
           'button[type="submit"]',
         ) as HTMLButtonElement;
         const originalText = submitButton?.textContent || "Suscribirse";
 
         try {
-          // Deshabilita el botón y muestra estado
-          if (submitButton) {
-            submitButton.disabled = true;
-            submitButton.textContent = "Enviando...";
-          }
+          submitButton.disabled = true;
+          submitButton.textContent = "Enviando...";
 
-          // Convertir FormData a JSON
-          let data = {
+          // Capturamos los datos reales
+          const payload = {
             email: formData.get("email"),
             discord: formData.get("discord"),
+            // Turnstile añade automáticamente un input llamado 'cf-turnstile-response'
+            turnstileToken: formData.get("cf-turnstile-response"),
           };
 
           const response = await fetch("/api/newsletter", {
@@ -141,13 +141,13 @@ const { class: className, ...props } = Astro.props;
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(data),
+            body: JSON.stringify(payload),
           });
 
-          data = await response.json();
+          const result = await response.json();
 
           // Si es exitoso, navega a /thanks
-          if (data.success) {
+          if (result.success) {
             if (document.startViewTransition) {
               document.startViewTransition(() => {
                 window.location.href = "/thanks";
@@ -156,19 +156,13 @@ const { class: className, ...props } = Astro.props;
               window.location.href = "/thanks";
             }
           } else {
-            alert("Error al suscribirse. Intenta nuevamente.");
-            if (submitButton) {
-              submitButton.disabled = false;
-              submitButton.textContent = originalText;
-            }
+            throw new Error(result.error || "Error desconocido");
           }
         } catch (error) {
           console.error("Error:", error);
           alert("Error al suscribirse. Intenta nuevamente.");
-          if (submitButton) {
-            submitButton.disabled = false;
-            submitButton.textContent = originalText;
-          }
+          submitButton.disabled = false;
+          submitButton.textContent = originalText;
         }
       });
     }
