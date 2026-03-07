@@ -65,7 +65,16 @@ const { class: className, ...props } = Astro.props;
               required
             />
           </div>
-					<div class="cf-turnstile mt-5" data-sitekey="0x4AAAAAACnYU9BDMorzopND"></div>
+          <div
+            class="cf-turnstile mt-5"
+            data-sitekey="0x4AAAAAACnYU9BDMorzopND"
+            data-theme="dark"
+            data-size="flexible"
+            data-callback="onTurnstileSuccess"
+            data-error-callback="onTurnstileError"
+            data-expired-callback="onTurnstileExpired"
+          >
+          </div>
           <div class="flex flex-col sm:flex-row pt-4">
             <div class="relative group m-auto">
               <div
@@ -75,7 +84,8 @@ const { class: className, ...props } = Astro.props;
               <button
                 type="submit"
                 class="relative inline-flex flex-1 px-3 py-2 text-white text-lg bg-gray-900 rounded-md sm:mt-0 sm:w-auto whitespace-nowrap dark:bg-gray-900"
-              disabled>
+                disabled
+              >
                 Suscribirse
               </button>
             </div>
@@ -148,6 +158,19 @@ const { class: className, ...props } = Astro.props;
           }
         }
       });
+
+      function onTurnstileSuccess(token) {
+        console.log("Turnstile success:", token);
+        document.getElementById("submit-btn").disabled = false;
+      }
+      function onTurnstileError(errorCode) {
+        console.error("Turnstile error:", errorCode);
+        document.getElementById("submit-btn").disabled = true;
+      }
+      function onTurnstileExpired() {
+        console.warn("Turnstile token expired");
+        document.getElementById("submit-btn").disabled = true;
+      }
     }
   });
 </script>
