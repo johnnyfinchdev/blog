@@ -54,7 +54,9 @@ const config = defineConfig({
       }
     })
   ],
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    imageService: 'compile'
+  }),
   vite: {
     plugins: [tailwindcss()],
   },
