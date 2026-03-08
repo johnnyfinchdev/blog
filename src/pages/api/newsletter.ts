@@ -26,32 +26,44 @@ export const POST: APIRoute = async (context) => {
 
 		const resend = new Resend(RESEND_KEY);
 
-		// 2. Guardar en la Audiencia (Contactos) de Resend
-		// Nota: Asegúrate de tener creado un "Audience" en el panel de Resend y copiar su ID
-		await resend.contacts.create({
-			email: email,
-			firstName: discord || '',
-			unsubscribed: false,
+		const subs = await resend.contacts.list({
+			limit: 10,
 		});
 
-		// 3. Enviar email de bienvenida/confirmación
-		const { error: mailError } = await resend.emails.send({
-			from: 'Hola Developers <newsletter@holadevelopers.blog>',
-			to: [email],
-			subject: '¡Bienvenido a la Newsletter! 🚀',
-			html: `
-                <h1>¡Hola ${discord || 'Developer'}!</h1>
-                <p>Gracias por suscribirte. A partir de ahora recibirás retos, posts y novedades.</p>
-                ${discord ? `<p>Tu usuario de Discord <strong>${discord}</strong> ha sido registrado para el canal exclusivo.</p>` : ''}
-                <p>Nos vemos en el código.</p>
-            `,
-		});
+		console.log(subs)
+
+		// for (const sub of subs) {
+		// 	if (sub.email !== email) {
+		// 		// 2. Guardar en la Audiencia (Contactos) de Resend
+		// 		await resend.contacts.create({
+		// 			email: email,
+		// 			firstName: discord || '',
+		// 			unsubscribed: false,
+		// 		});
+
+		// 		// 3. Enviar email de bienvenida/confirmación
+		// 		const { error: mailError } = await resend.emails.send({
+		// 			from: 'Hola Developers <newsletter@holadevelopers.blog>',
+		// 			to: [email],
+		// 			subject: '¡Bienvenido a la Newsletter! 🚀',
+		// 			html: `
+        //         <h1>¡Hola ${discord || 'Developer'}!</h1>
+        //         <p>Gracias por suscribirte. A partir de ahora recibirás retos, posts y novedades.</p>
+        //         ${discord ? `<p>Tu usuario de Discord <strong>${discord}</strong> ha sido registrado para el canal exclusivo.</p>` : ''}
+        //         <p>Nos vemos en el código.</p>
+        //     `,
+		// 		});
+		// 		if (mailError) {
+		// 			console.error('Error enviando email:', mailError);
+		// 			// Podrías decidir si fallar aquí o continuar si el contacto se guardó
+		// 		}
+		// 	}
+		// }
 
 
-		if (mailError) {
-			console.error('Error enviando email:', mailError);
-			// Podrías decidir si fallar aquí o continuar si el contacto se guardó
-		}
+
+
+
 
 		return new Response(
 			JSON.stringify({ success: true }),
