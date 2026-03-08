@@ -7,7 +7,7 @@ import Layout from "../layouts/Layout.astro";
 
 interface Props extends HTMLAttributes<"div"> {}
 
-const { class: className, resource = true, ...props } = Astro.props;
+const { class: className, resource = false, ...props } = Astro.props;
 ---
 
 <style>
@@ -68,7 +68,7 @@ const { class: className, resource = true, ...props } = Astro.props;
           height={24}
           class="glow-icon"
         />
-        <h2>{resource ? "¡Ya estabas suscrito!" : "¡Muchísimas gracias!"}</h2>
+        <h2>{resource ? "¡Muchísimas gracias!" : "¡Ya estabas suscrito!"}</h2>
       </div>
       <div class="prose">
         {

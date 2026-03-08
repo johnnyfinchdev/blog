@@ -168,6 +168,7 @@ const { class: className, ...props } = Astro.props;
             if (document.startViewTransition) {
               document.startViewTransition(() => {
                 modal.resource = result.existe
+                alert(modal)
                 modal?.showModal();
               });
             } else {
