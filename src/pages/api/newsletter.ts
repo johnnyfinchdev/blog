@@ -61,7 +61,7 @@ export const POST: APIRoute = async (context) => {
 					<li>Publicidad</li>
 				</ul>
 				<h3>Nos vemos en el código.</h3>
-				<p>Te puedes desuscribir <a href="https://resend.com/broadcasts/95b132da-b2cf-46a6-a2d5-924796aa70f9/%7B%7B%7BRESEND_UNSUBSCRIBE_URL%7D%7D%7D">aquí</a>.</p>
+				<p>Te puedes desuscribir <a href="{{{RESEND_UNSUBSCRIBE_URL}}}">aquí</a>.</p>
             `,
 		});
 
