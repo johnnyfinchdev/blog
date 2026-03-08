@@ -34,7 +34,7 @@ export const POST: APIRoute = async (context) => {
 		// 3. EL CAMBIO CLAVE: Esperar el envío y verificar el remitente
 		// Usamos una constante para capturar el resultado antes de retornar nada
 		const { data: mailData, error: mailError } = await resend.emails.send({
-			from: 'Newsletter - Hola Developers! <newsletter@holadevelopers.blog>',
+			from: 'newsletter@holadevelopers.blog',
 			to: [email.trim()],
 			subject: 'Nos alegra que te hayas unido a la Newsletter, Developer',
 			html: `        
