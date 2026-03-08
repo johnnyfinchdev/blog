@@ -31,7 +31,7 @@ export const POST: APIRoute = async (context) => {
 		});
 
 		// Si hay error porque ya existe
-		if (!contactData) {
+		if (contactData) {
 			// Resend devuelve un código específico si el contacto ya existe
 			return new Response(
 				JSON.stringify({ success: true, existe: true, message: 'Ya suscrito' }),
@@ -70,7 +70,7 @@ export const POST: APIRoute = async (context) => {
 		}
 
 		return new Response(
-			JSON.stringify({ success: true, existe: false, message: JSON.stringify(contactData, error) }),
+			JSON.stringify({ success: true, existe: false, message: 'Suscrito correctamente' }),
 			{ status: 200 }
 		);
 
