@@ -26,8 +26,6 @@ export const POST: APIRoute = async (context) => {
 
 		const resend = new Resend(RESEND_KEY);
 
-		// Intentar crear el contacto directamente
-		// Resend devolverá un error si el contacto ya existe en esa audiencia
 		const { data: contactData, error } = await resend.contacts.create({
 			email: email,
 			firstName: discord || '',
@@ -35,7 +33,7 @@ export const POST: APIRoute = async (context) => {
 		});
 
 		// Si hay error porque ya existe
-		if (!contactData?.id) {
+		if (!contactData) {
 			// Resend devuelve un código específico si el contacto ya existe
 			return new Response(
 				JSON.stringify({ success: true, existe: true, message: 'Ya suscrito' }),
@@ -74,7 +72,7 @@ export const POST: APIRoute = async (context) => {
 		}
 
 		return new Response(
-			JSON.stringify({ success: true, existe: false, message:JSON.stringify(error)}),
+			JSON.stringify({ success: true, existe: false, message: JSON.stringify(error) }),
 			{ status: 200 }
 		);
 
