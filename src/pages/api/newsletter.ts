@@ -30,7 +30,7 @@ export const POST: APIRoute = async (context) => {
 		const subCheck = await resend.contacts.get({
 			email: email,
 		});
-		if (subCheck.email !== undefined) {
+		if (!subCheck.data?.email) {
 			// 3. Guardar en la Audiencia (Contactos) de Resend
 			await resend.contacts.create({
 				email: email,
