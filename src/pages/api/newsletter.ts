@@ -26,7 +26,7 @@ export const POST: APIRoute = async (context) => {
 
 		const resend = new Resend(RESEND_KEY);
 
-		const { data: emaiData, error } = await resend.contacts.get({
+		const { data: emaiData, error: emailError } = await resend.contacts.get({
 			email: email,
 		});
 
@@ -37,16 +37,15 @@ export const POST: APIRoute = async (context) => {
 				JSON.stringify({ success: true, existe: true, message: 'Ya suscrito' }),
 				{ status: 200 }
 			);
+		} else {
+			const { data: contactData, error: contactError } = await resend.contacts.create({
+				email: email,
+				firstName: discord || '',
+				unsubscribed: false,
+			});
 		}
 
-		// await resend.contacts.create({
-		// 	email: email,
-		// 	firstName: discord || '',
-		// 	unsubscribed: false,
-		// });
-
-
-		// 3. SI LLEGAMOS AQUÍ, EL CONTACTO ES NUEVO -> Enviar email
+		// SI LLEGAMOS AQUÍ, EL CONTACTO ES NUEVO -> Enviar email
 		const { error: mailError } = await resend.emails.send({
 			from: 'Newsletter - Hola Developers! <newsletter@holadevelopers.blog>',
 			to: [email],
