@@ -167,6 +167,7 @@ const { class: className, ...props } = Astro.props;
             "modal-newsletter",
           ) as HTMLDialogElement;
           if (result.success) {
+            alert(result.message)
             modal.dispatchEvent(
               // Dispatch custom event
               new CustomEvent("open-modal", {

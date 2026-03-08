@@ -13,30 +13,29 @@ export const POST: APIRoute = async (context) => {
 		const env = context.locals.runtime.env as Record<string, any>;
 		const resend = new Resend(env.RESEND_API_KEY);
 
-		// 1. Verificación de existencia
+		// 1. Verificación: ¿Ya existe?
 		const { data: existing } = await resend.contacts.get({ email });
-
 		if (existing && (existing as any).id) {
 			return new Response(JSON.stringify({ success: true, existe: true }), { status: 200 });
 		}
 
-		// 2. Crear el contacto primero
-		const { error: contactError } = await resend.contacts.create({
+		// 2. Creación del contacto
+		const { data: contact, error: contactError } = await resend.contacts.create({
 			email: email,
-			firstName: discord || '',
+			firstName: discord || 'Developer',
 			unsubscribed: false,
 		});
 
 		if (contactError) {
-			console.error('Error Resend Contactos:', contactError);
-			throw new Error('No se pudo crear el contacto');
+			console.error('Error al crear contacto:', contactError);
+			throw new Error('Error en creación de contacto');
 		}
 
-		// 3. ENVIAR EMAIL (Aquí es donde suele fallar por tiempo)
+		// 3. EL CAMBIO CLAVE: Esperar el envío y verificar el remitente
 		// Usamos una constante para capturar el resultado antes de retornar nada
-		const emailResponse = await resend.emails.send({
+		const { data: mailData, error: mailError } = await resend.emails.send({
 			from: 'Newsletter - Hola Developers! <newsletter@holadevelopers.blog>',
-			to: [email],
+			to: [email.trim()],
 			subject: 'Nos alegra que te hayas unido a la Newsletter, Developer',
 			html: `        
 				<h1>¡Hola Developer!</h1>
@@ -58,17 +57,17 @@ export const POST: APIRoute = async (context) => {
             `,
 		});
 
-		if (emailResponse.error) {
-			console.error('Error Resend Email:', emailResponse.error);
-			// Aunque el mail falle, el contacto ya se creó, 
-			// pero notificamos el error en consola para debuggear.
+		if (mailError) {
+			// Si el contacto se creó pero el mail falla, Resend te dirá por qué aquí
+			console.error('Resend falló al enviar:', mailError);
+			return new Response(JSON.stringify({
+				success: false,
+				error: 'Contacto creado, pero email falló',
+				details: mailError
+			}), { status: 500 });
 		}
 
-		// 4. Solo respondemos cuando AMBAS promesas terminaron
-		return new Response(
-			JSON.stringify({ success: true, existe: false, message: 'Proceso completado' }),
-			{ status: 200 }
-		);
+		return new Response(JSON.stringify({ success: true, mailId: mailData?.id }), { status: 200 });
 
 	} catch (error) {
 		console.error('Error en newsletter:', error);
