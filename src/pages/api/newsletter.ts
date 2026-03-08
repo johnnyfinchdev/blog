@@ -11,7 +11,7 @@ export const POST: APIRoute = async (context) => {
 		const body = await context.request.json();
 		const { email, discord } = body;
 
-		// 1. Validación básica
+		// Validación básica
 		if (!email || !email.includes('@')) {
 			return new Response(JSON.stringify({ success: false, error: 'Email inválido' }), { status: 400 });
 		}
@@ -26,25 +26,28 @@ export const POST: APIRoute = async (context) => {
 
 		const resend = new Resend(RESEND_KEY);
 
-		// 2. Verificar si el contacto ya está registrado
-		const subCheck = await resend.contacts.get({
-			email: email,
-		});
-		if (subCheck.data?.email) {
-			return new Response(
-				JSON.stringify({ success: true, existe: true }),
-				{ status: 200, headers: { 'Content-Type': 'application/json' } }
-			);
-		}
-
-		// 3. Guardar en la Audiencia (Contactos) de Resend
-		await resend.contacts.create({
+		// Intentar crear el contacto directamente
+		// Resend devolverá un error si el contacto ya existe en esa audiencia
+		const { data: contactData, error: contactError } = await resend.contacts.create({
 			email: email,
 			firstName: discord || '',
 			unsubscribed: false,
 		});
 
-		// 4. Enviar email de bienvenida/confirmación
+		// Si hay error porque ya existe
+		if (contactError) {
+			// Resend devuelve un código específico si el contacto ya existe
+			if (contactError.name === "422" || contactError.message.includes('already exists')) {
+				return new Response(
+					JSON.stringify({ success: true, existe: true, message: 'Ya suscrito' }),
+					{ status: 200 }
+				);
+			}
+			// Si es otro error de contacto, lanzarlo
+			throw new Error(contactError.message);
+		}
+
+		// 3. SI LLEGAMOS AQUÍ, EL CONTACTO ES NUEVO -> Enviar email
 		const { error: mailError } = await resend.emails.send({
 			from: 'Newsletter - Hola Developers! <newsletter@holadevelopers.blog>',
 			to: [email],
@@ -69,16 +72,15 @@ export const POST: APIRoute = async (context) => {
 				<p>Te puedes desuscribir <a href="https://resend.com/broadcasts/95b132da-b2cf-46a6-a2d5-924796aa70f9/%7B%7B%7BRESEND_UNSUBSCRIBE_URL%7D%7D%7D">aquí</a>.</p>
             `,
 		});
+
 		if (mailError) {
 			console.error('Error enviando email:', mailError);
 		}
 
 		return new Response(
 			JSON.stringify({ success: true, existe: false }),
-			{ status: 200, headers: { 'Content-Type': 'application/json' } }
+			{ status: 200 }
 		);
-
-
 
 	} catch (error) {
 		console.error('Error en newsletter:', error);
