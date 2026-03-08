@@ -31,7 +31,7 @@ export const POST: APIRoute = async (context) => {
 			throw new Error('Error en creación de contacto');
 		}
 
-		await delay(600);
+		await delay(1100);
 
 		// 3. EL CAMBIO CLAVE: Esperar el envío y verificar el remitente
 		// Usamos una constante para capturar el resultado antes de retornar nada
