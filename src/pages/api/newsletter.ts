@@ -30,15 +30,7 @@ export const POST: APIRoute = async (context) => {
 		const subCheck = await resend.contacts.get({
 			email: email,
 		});
-		if (!subCheck.data?.email) {
-			// 3. Guardar en la Audiencia (Contactos) de Resend
-			await resend.contacts.create({
-				email: email,
-				firstName: discord || '',
-				unsubscribed: false,
-			});
-
-			// 3. Enviar email de bienvenida/confirmación
+					// 3. Enviar email de bienvenida/confirmación
 			const { error: mailError } = await resend.emails.send({
 				from: 'Newsletter - Hola Developers! <newsletter@holadevelopers.blog>',
 				to: [email],
@@ -65,6 +57,15 @@ export const POST: APIRoute = async (context) => {
 			if (mailError) {
 				console.error('Error enviando email:', mailError);
 			}
+		if (!subCheck.data?.email) {
+			// 3. Guardar en la Audiencia (Contactos) de Resend
+			await resend.contacts.create({
+				email: email,
+				firstName: discord || '',
+				unsubscribed: false,
+			});
+
+
 
 			return new Response(
 				JSON.stringify({ success: true, existe: false }),
