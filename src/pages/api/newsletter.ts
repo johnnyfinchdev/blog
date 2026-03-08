@@ -16,7 +16,6 @@ export const POST: APIRoute = async (context) => {
 			return new Response(JSON.stringify({ success: false, error: 'Email inválido' }), { status: 400 });
 		}
 
-		// Obtener el binding de KV desde el contexto de Cloudflare
 		const env = context.locals.runtime.env as Record<string, any>;
 		const RESEND_KEY = env.RESEND_API_KEY;
 
@@ -30,27 +29,25 @@ export const POST: APIRoute = async (context) => {
 			email: email,
 		});
 
-		// Si hay error porque ya existe
 		if (emaiData) {
-			// Resend devuelve un código específico si el contacto ya existe
 			return new Response(
 				JSON.stringify({ success: true, existe: true, message: 'Ya suscrito' }),
 				{ status: 200 }
 			);
-		} else {
-			const { data: contactData, error: contactError } = await resend.contacts.create({
-				email: email,
-				firstName: discord || '',
-				unsubscribed: false,
-			});
 		}
+		const { data: contactData, error: contactError } = await resend.contacts.create({
+			email: email,
+			firstName: discord || '',
+			unsubscribed: false,
+		});
 
-		// SI LLEGAMOS AQUÍ, EL CONTACTO ES NUEVO -> Enviar email
-		const { error: mailError } = await resend.emails.send({
-			from: 'Newsletter - Hola Developers! <newsletter@holadevelopers.blog>',
-			to: [email],
-			subject: 'Nos alegra que te hayas unido a la Newsletter, Developer',
-			html: `        
+		if (contactData) {
+			// Enviar email
+			const { error: mailError } = await resend.emails.send({
+				from: 'Newsletter - Hola Developers! <newsletter@holadevelopers.blog>',
+				to: [email],
+				subject: 'Nos alegra que te hayas unido a la Newsletter, Developer',
+				html: `        
 				<h1>¡Hola Developer!</h1>
 				<p>Gracias por suscribirte a esta newsletter dedicada a personas como tú, apasionadas por la programación y con muchas ganas de aprender.</p>
 				<p>A partir de ahora recibirás notificaciones acerca de:</p>
@@ -68,16 +65,16 @@ export const POST: APIRoute = async (context) => {
 				</ul>
 				<h3>Nos vemos en el código.</h3>
             `,
-		});
+			});
 
-		if (mailError) {
-			console.error('Error enviando email:', mailError);
+			if (mailError) {
+				console.error('Error enviando email:', mailError);
+			}
+			return new Response(
+				JSON.stringify({ success: true, existe: false, message: 'Suscrito correctamente' }),
+				{ status: 200 }
+			);
 		}
-
-		return new Response(
-			JSON.stringify({ success: true, existe: false, message: 'Suscrito correctamente' }),
-			{ status: 200 }
-		);
 
 	} catch (error) {
 		console.error('Error en newsletter:', error);
