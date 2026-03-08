@@ -31,6 +31,8 @@ export const POST: APIRoute = async (context) => {
 			throw new Error('Error en creación de contacto');
 		}
 
+		await delay(600);
+
 		// 3. EL CAMBIO CLAVE: Esperar el envío y verificar el remitente
 		// Usamos una constante para capturar el resultado antes de retornar nada
 		const { data: mailData, error: mailError } = await resend.emails.send({
@@ -62,7 +64,7 @@ export const POST: APIRoute = async (context) => {
 			console.error('Resend falló al enviar:', mailError);
 			return new Response(JSON.stringify({
 				success: false,
-				error:  mailError.message,
+				error: mailError,
 			}), { status: 500 });
 		}
 
@@ -76,3 +78,7 @@ export const POST: APIRoute = async (context) => {
 		);
 	}
 };
+
+function delay(ms: number) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
