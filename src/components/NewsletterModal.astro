@@ -75,14 +75,15 @@ const { class: className, resource = false, ...props } = Astro.props;
         <div id="new-sub-text" style="display:none">
           <p>
             Tu suscripción al newsletter de <strong>Hola Developers!</strong> ha sido
-            procesada correctamente. A partir de ahora recibirás notificaciones...
+            procesada correctamente.
           </p>
+
+          <p>A partir de ahora recibirás notificaciones para mantenerte al tanto de todas y cada una de las novedades.</p>
 
           <p>
             Si proporcionaste tu usuario de <a
               target="_blank"
-              href="https://discord.gg/...">Discord</a
-            >, pronto tendrás acceso a un canal exclusivo...
+              href="https://discord.gg/wkvYgfGBWW">Discord</a>, pronto tendrás acceso a un canal exclusivo donde podrás resolver tus dudas sobre programación web.
           </p>
         </div>
         <div id="old-sub-text" style="display:none">
@@ -110,8 +111,6 @@ const { class: className, resource = false, ...props } = Astro.props;
   // Escucha un custom event para recibir parámetros
   modal.addEventListener("open-modal", (e: CustomEvent) => {
     const { existe } = e.detail;
-    alert(existe);
-
     const title = document.getElementById("modal-title")!;
     const newSubText = document.getElementById("new-sub-text")!;
     const oldSubText = document.getElementById("old-sub-text")!;
