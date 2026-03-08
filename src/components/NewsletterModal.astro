@@ -55,56 +55,44 @@ const { class: className, resource = false, ...props } = Astro.props;
 </style>
 
 <dialog id="modal-newsletter">
-  <div class="layout-grid-left" slot="left">
-    <!-- Empty left column for layout consistency -->
-  </div>
-  <div class="layout-grid-right" slot="right">
-    <Card>
-      <div class="header-container">
-        <Icon
-          type="lucide"
-          name="check"
-          width={24}
-          height={24}
-          class="glow-icon"
-        />
-        <h2>{resource ? "¡Muchísimas gracias!" : "¡Ya estabas suscrito!"}</h2>
-      </div>
-      <div class="prose">
-        {
-          resource ? (
-            <>
-              <p>
-                Tu suscripción al newsletter de{" "}
-                <strong>Hola Developers!</strong> ha sido procesada
-                correctamente.
-              </p>
-
-              <p>
-                A partir de ahora recibirás notificaciones para mantenerte al
-                tanto de todas y cada una de las novedades
-              </p>
-            </>
-          ) : null
-        }
-
-        <p>
-          Si proporcionaste tu usuario de <a
-            target="_blank"
-            href="https://discord.gg/wkvYgfGBWW">Discord</a
-          >, pronto tendrás acceso a un canal exclusivo donde podrás resolver
-          tus dudas sobre programación web.
-        </p>
-
-        <p style="margin-top: 2rem;">
-          <button
-            onclick="document.getElementById('modal-newsletter').close(); window.location.reload()"
-            class="mt-4 px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700"
-          >
-            Cerrar
-          </button>
-        </p>
-      </div>
-    </Card>
-  </div>
+  <Card>
+    <div class="header-container">
+      <Icon type="lucide" name="check" width={24} height={24} class="glow-icon" />
+      <!-- Dos versiones del título, visibilidad controlada por JS/CSS -->
+      <h2 id="modal-title">¡Ya estabas suscrito!</h2>
+    </div>
+    <div class="prose">
+      <!-- Este párrafo solo aparece si resource=true -->
+      <p id="modal-resource-text" style="display:none">
+        Tu suscripción al newsletter de <strong>Hola Developers!</strong> ha sido 
+        procesada correctamente. A partir de ahora recibirás notificaciones...
+      </p>
+      <p>
+        Si proporcionaste tu usuario de <a target="_blank" href="https://discord.gg/...">Discord</a>, 
+        pronto tendrás acceso a un canal exclusivo...
+      </p>
+      <p style="margin-top: 2rem;">
+        <button onclick="document.getElementById('modal-newsletter').close(); window.location.reload()">
+          Cerrar
+        </button>
+      </p>
+    </div>
+  </Card>
 </dialog>
+
+<script>
+  const modal = document.getElementById('modal-newsletter') as HTMLDialogElement;
+  
+  // Escucha un custom event para recibir parámetros
+  modal.addEventListener('open-modal', (e: CustomEvent) => {
+    const { resource } = e.detail;
+    
+    const title = document.getElementById('modal-title')!;
+    const resourceText = document.getElementById('modal-resource-text')!;
+    
+    title.textContent = resource ? '¡Muchísimas gracias!' : '¡Ya estabas suscrito!';
+    resourceText.style.display = resource ? 'block' : 'none';
+    
+    modal.showModal();
+  });
+</script>

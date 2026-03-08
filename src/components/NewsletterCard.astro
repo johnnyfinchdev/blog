@@ -163,18 +163,17 @@ const { class: className, ...props } = Astro.props;
           const result = await response.json();
 
           // Si es exitoso, muestra un modal
-          const modal = document.getElementById("modal-newsletter") as HTMLDialogElement;
+          const modal = document.getElementById(
+            "modal-newsletter",
+          ) as HTMLDialogElement;
           if (result.success) {
-            alert(JSON.stringify(result))
-            if (document.startViewTransition) {
-              document.startViewTransition(() => {
-                modal.resource = result.existe
-                modal?.showModal();
-              });
-            } else {
-              modal.resource = result.existe
-              modal?.showModal();
-            }
+            modal.dispatchEvent(
+              // Dispatch custom event
+              new CustomEvent("open-modal", {
+                detail: { resource: result.existe },
+              }),
+            );
+            modal?.showModal();
           } else {
             throw new Error(result.error || "Error desconocido");
           }
