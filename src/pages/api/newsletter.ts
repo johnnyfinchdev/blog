@@ -26,18 +26,25 @@ export const POST: APIRoute = async (context) => {
 
 		const resend = new Resend(RESEND_KEY);
 
-		const { data: contactData, error } = await resend.contacts.get({
+		const { data: emaiData, error } = await resend.contacts.get({
 			email: email,
 		});
 
 		// Si hay error porque ya existe
-		if (contactData) {
+		if (emaiData) {
 			// Resend devuelve un código específico si el contacto ya existe
 			return new Response(
 				JSON.stringify({ success: true, existe: true, message: 'Ya suscrito' }),
 				{ status: 200 }
 			);
 		}
+
+		await resend.contacts.create({
+			email: email,
+			firstName: discord || '',
+			unsubscribed: false,
+		});
+
 
 		// 3. SI LLEGAMOS AQUÍ, EL CONTACTO ES NUEVO -> Enviar email
 		const { error: mailError } = await resend.emails.send({
@@ -61,7 +68,6 @@ export const POST: APIRoute = async (context) => {
 					<li>Publicidad</li>
 				</ul>
 				<h3>Nos vemos en el código.</h3>
-				<p>Te puedes desuscribir <a href="{{{RESEND_UNSUBSCRIBE_URL}}}">aquí</a>.</p>
             `,
 		});
 
