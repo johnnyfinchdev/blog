@@ -39,11 +39,11 @@ export const POST: APIRoute = async (context) => {
 			);
 		}
 
-		await resend.contacts.create({
-			email: email,
-			firstName: discord || '',
-			unsubscribed: false,
-		});
+		// await resend.contacts.create({
+		// 	email: email,
+		// 	firstName: discord || '',
+		// 	unsubscribed: false,
+		// });
 
 
 		// 3. SI LLEGAMOS AQUÍ, EL CONTACTO ES NUEVO -> Enviar email
