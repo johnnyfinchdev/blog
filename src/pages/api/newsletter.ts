@@ -30,7 +30,7 @@ export const POST: APIRoute = async (context) => {
 		const subExist = await resend.contacts.get({
 			email: email,
 		});
-
+		alert(subExist)
 		if (!subExist) {
 			// 3. Guardar en la Audiencia (Contactos) de Resend
 			await resend.contacts.create({
