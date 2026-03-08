@@ -30,12 +30,26 @@ export const POST: APIRoute = async (context) => {
 		const subCheck = await resend.contacts.get({
 			email: email,
 		});
-		// 3. Enviar email de bienvenida/confirmación
-			const { error: mailError } = await resend.emails.send({
-				from: 'Newsletter - Hola Developers! <newsletter@holadevelopers.blog>',
-				to: [email],
-				subject: 'Nos alegra que te hayas unido a la Newsletter, Developer',
-				html: `        
+		if (subCheck.data?.email) {
+			return new Response(
+				JSON.stringify({ success: true, existe: true }),
+				{ status: 200, headers: { 'Content-Type': 'application/json' } }
+			);
+		}
+
+		// 3. Guardar en la Audiencia (Contactos) de Resend
+		await resend.contacts.create({
+			email: email,
+			firstName: discord || '',
+			unsubscribed: false,
+		});
+
+		// 4. Enviar email de bienvenida/confirmación
+		const { error: mailError } = await resend.emails.send({
+			from: 'Newsletter - Hola Developers! <newsletter@holadevelopers.blog>',
+			to: [email],
+			subject: 'Nos alegra que te hayas unido a la Newsletter, Developer',
+			html: `        
 				<h1>¡Hola Developer!</h1>
 				<p>Gracias por suscribirte a esta newsletter dedicada a personas como tú, apasionadas por la programación y con muchas ganas de aprender.</p>
 				<p>A partir de ahora recibirás notificaciones acerca de:</p>
@@ -52,32 +66,20 @@ export const POST: APIRoute = async (context) => {
 					<li>Publicidad</li>
 				</ul>
 				<h3>Nos vemos en el código.</h3>
-				<p>Te puedes desuscribir <a hrfef="https://resend.com/broadcasts/95b132da-b2cf-46a6-a2d5-924796aa70f9/%7B%7B%7BRESEND_UNSUBSCRIBE_URL%7D%7D%7D">aquí</a>.</p>
+				<p>Te puedes desuscribir <a href="https://resend.com/broadcasts/95b132da-b2cf-46a6-a2d5-924796aa70f9/%7B%7B%7BRESEND_UNSUBSCRIBE_URL%7D%7D%7D">aquí</a>.</p>
             `,
-			});
-			if (mailError) {
-				console.error('Error enviando email:', mailError);
-			}
-		if (!subCheck.data?.email) {
-			// 3. Guardar en la Audiencia (Contactos) de Resend
-			await resend.contacts.create({
-				email: email,
-				firstName: discord || '',
-				unsubscribed: false,
-			});
-
-			
-
-			return new Response(
-				JSON.stringify({ success: true, existe: false }),
-				{ status: 200, headers: { 'Content-Type': 'application/json' } }
-			);
+		});
+		if (mailError) {
+			console.error('Error enviando email:', mailError);
 		}
 
 		return new Response(
-			JSON.stringify({ success: true, existe: true }),
+			JSON.stringify({ success: true, existe: false }),
 			{ status: 200, headers: { 'Content-Type': 'application/json' } }
 		);
+
+
+
 	} catch (error) {
 		console.error('Error en newsletter:', error);
 		return new Response(
