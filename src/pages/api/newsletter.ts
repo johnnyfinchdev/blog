@@ -62,8 +62,7 @@ export const POST: APIRoute = async (context) => {
 			console.error('Resend falló al enviar:', mailError);
 			return new Response(JSON.stringify({
 				success: false,
-				error: 'Contacto creado, pero email falló',
-				debug: mailError.message
+				error:  mailError.message,
 			}), { status: 500 });
 		}
 
