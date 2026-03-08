@@ -27,11 +27,10 @@ export const POST: APIRoute = async (context) => {
 		const resend = new Resend(RESEND_KEY);
 
 		// 2. Verificar si el contacto ya está registrado
-		const subExist = await resend.contacts.get({
+		const subCheck = await resend.contacts.get({
 			email: email,
 		});
-		alert(subExist)
-		if (!subExist) {
+		if (subCheck.email !== undefined) {
 			// 3. Guardar en la Audiencia (Contactos) de Resend
 			await resend.contacts.create({
 				email: email,
