@@ -22,7 +22,7 @@ export const POST: APIRoute = async (context) => {
 		// 2. Creación del contacto
 		const { data: contact, error: contactError } = await resend.contacts.create({
 			email: email,
-			firstName: discord || 'Developer',
+			firstName: discord || '',
 			unsubscribed: false,
 		});
 
@@ -64,7 +64,7 @@ export const POST: APIRoute = async (context) => {
 			console.error('Resend falló al enviar:', mailError);
 			return new Response(JSON.stringify({
 				success: false,
-				error: mailError,
+				error: JSON.stringify(mailError),
 			}), { status: 500 });
 		}
 
