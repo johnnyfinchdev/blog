@@ -26,43 +26,48 @@ export const POST: APIRoute = async (context) => {
 
 		const resend = new Resend(RESEND_KEY);
 
-		const subs = await resend.contacts.list({
-			limit: 10,
+		// 2. Verificar si el contacto ya está registrado
+		const subExist = await resend.contacts.get({
+			email: email,
 		});
 
-		console.log(subs)
+		if (!subExist) {
+			// 3. Guardar en la Audiencia (Contactos) de Resend
+			await resend.contacts.create({
+				email: email,
+				firstName: discord || '',
+				unsubscribed: false,
+			});
 
-		// for (const sub of subs) {
-		// 	if (sub.email !== email) {
-		// 		// 2. Guardar en la Audiencia (Contactos) de Resend
-		// 		await resend.contacts.create({
-		// 			email: email,
-		// 			firstName: discord || '',
-		// 			unsubscribed: false,
-		// 		});
-
-		// 		// 3. Enviar email de bienvenida/confirmación
-		// 		const { error: mailError } = await resend.emails.send({
-		// 			from: 'Hola Developers <newsletter@holadevelopers.blog>',
-		// 			to: [email],
-		// 			subject: '¡Bienvenido a la Newsletter! 🚀',
-		// 			html: `
-        //         <h1>¡Hola ${discord || 'Developer'}!</h1>
-        //         <p>Gracias por suscribirte. A partir de ahora recibirás retos, posts y novedades.</p>
-        //         ${discord ? `<p>Tu usuario de Discord <strong>${discord}</strong> ha sido registrado para el canal exclusivo.</p>` : ''}
-        //         <p>Nos vemos en el código.</p>
-        //     `,
-		// 		});
-		// 		if (mailError) {
-		// 			console.error('Error enviando email:', mailError);
-		// 			// Podrías decidir si fallar aquí o continuar si el contacto se guardó
-		// 		}
-		// 	}
-		// }
-
-
-
-
+			// 3. Enviar email de bienvenida/confirmación
+			const { error: mailError } = await resend.emails.send({
+				from: 'Newsletter - Hola Developers! <newsletter@holadevelopers.blog>',
+				to: [email],
+				subject: 'Nos alegra que te hayas unido a la Newsletter, Developer',
+				html: `        
+				<h1>¡Hola Developer!</h1>
+				<p>Gracias por suscribirte a esta newsletter dedicada a personas como tú, apasionadas por la programación y con muchas ganas de aprender.</p>
+				<p>A partir de ahora recibirás notificaciones acerca de:</p>
+				<ul>
+					<li>Nuevos posts.</li>
+					<li>Retos de programación.</li>
+					<li>Proyectos de la comunidad.</li>
+					<li>Eventos para pasar tiempo de calidad junto a la comunidad de Developers.</li>
+					<li>Y mucho más.</li>
+				</ul>
+				
+				<p>No recibirás:</p>
+				<ul>
+					<li>Publicidad</li>
+				</ul>
+				<h3>Nos vemos en el código.</h3>
+				<p>Te puedes desuscribir aquí: {{{RESEND_UNSUBSCRIBE_URL}}}</p>
+            `,
+			});
+			if (mailError) {
+				console.error('Error enviando email:', mailError);
+			}
+		}
 
 
 		return new Response(
