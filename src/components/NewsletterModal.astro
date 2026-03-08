@@ -73,7 +73,6 @@ const { class: className, resource = false, ...props } = Astro.props;
 
       <div class="prose">
         <div id="new-sub-text" style="display:none">
-          <p><b>Revisa tu carpeta de spam si no lo ves.</b></p>
           <p>
             Tu suscripción al newsletter de <strong>Hola Developers!</strong> ha sido
             procesada correctamente.
@@ -86,9 +85,11 @@ const { class: className, resource = false, ...props } = Astro.props;
               target="_blank"
               href="https://discord.gg/wkvYgfGBWW">Discord</a>, pronto tendrás acceso a un canal exclusivo donde podrás resolver tus dudas sobre programación web.
           </p>
+
+          <p>Te ha tenido que llegar un correo<b>Revisa tu bandeja de SPAM.</b> y si está ahí marcalo como no SPAM</p>
         </div>
         <div id="old-sub-text" style="display:none">
-          <p>Si no te ha llegado ningún correo, por favor, manda un correo <a href="mailto:newsletter@holadevolopers.blog">aquí</a> explicando que te ha pasado.</p>
+          <p>Revisa tu bandeja de SPAM. Si no te ha llegado ningún correo, por favor, manda un correo <a href="mailto:newsletter@holadevolopers.blog">aquí</a> explicando que te ha pasado.</p>
         </div>
 
         <p style="margin-top: 2rem;">
