@@ -170,10 +170,9 @@ const { class: className, ...props } = Astro.props;
             modal.dispatchEvent(
               // Dispatch custom event
               new CustomEvent("open-modal", {
-                detail: { resource: result.existe },
+                detail: { existe: result.existe },
               }),
             );
-            modal?.showModal();
           } else {
             throw new Error(result.error || "Error desconocido");
           }
