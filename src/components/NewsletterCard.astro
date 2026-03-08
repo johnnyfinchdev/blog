@@ -165,10 +165,10 @@ const { class: className, ...props } = Astro.props;
           // Si es exitoso, muestra un modal
           const modal = document.getElementById("modal-newsletter") as HTMLDialogElement;
           if (result.success) {
+            alert(JSON.stringify(result))
             if (document.startViewTransition) {
               document.startViewTransition(() => {
                 modal.resource = result.existe
-                alert(modal)
                 modal?.showModal();
               });
             } else {
