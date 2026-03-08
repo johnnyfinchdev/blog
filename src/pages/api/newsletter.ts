@@ -60,7 +60,6 @@ export const POST: APIRoute = async (context) => {
 					<li>Publicidad</li>
 				</ul>
 				<h3>Nos vemos en el código.</h3>
-				<p>Te puedes desuscribir aquí: {{{RESEND_UNSUBSCRIBE_URL}}}</p>
             `,
 			});
 			if (mailError) {
