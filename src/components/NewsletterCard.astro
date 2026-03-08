@@ -87,7 +87,7 @@ const { class: className, ...props } = Astro.props;
                 id="submit-btn"
                 type="submit"
                 class="relative inline-flex flex-1 px-3 py-2 text-white text-lg bg-gray-900 rounded-sm sm:mt-0 sm:w-auto whitespace-nowrap dark:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
-                
+                disabled
               >
                 Suscribirse
               </button>
@@ -102,7 +102,7 @@ const { class: className, ...props } = Astro.props;
 <NewsletterModal />
 
 <script>
-  // // 1. Definimos las funciones en el objeto window para que Turnstile las encuentre
+  // 1. Definimos las funciones en el objeto window para que Turnstile las encuentre
   (window as any).onTurnstileSuccess = function (token: string) {
     const btn = document.getElementById("submit-btn") as HTMLButtonElement;
     if (btn) btn.disabled = false;
