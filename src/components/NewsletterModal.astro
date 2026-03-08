@@ -1,0 +1,106 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import "../pages/styles/global.css";
+import Card from "./Card.astro";
+import Icon from "./Icon.astro";
+import Layout from "../layouts/Layout.astro";
+
+interface Props extends HTMLAttributes<"div"> {}
+
+const { class: className, resource, ...props } = Astro.props;
+---
+
+<style>
+  dialog {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  dialog::backdrop {
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    background: rgba(255, 0, 0, 0.1);
+  }
+
+  :global(.prose) {
+    color: #d4d4d8;
+  }
+
+  :global(.prose p) {
+    margin: 1rem 0;
+  }
+
+  :global(.prose ul) {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+  }
+
+  :global(.prose li) {
+    margin: 0.5rem 0;
+  }
+
+  :global(.prose a) {
+    color: #fc8e6d;
+    text-decoration: underline;
+    transition: color 0.2s;
+  }
+
+  :global(.prose a:hover) {
+    color: #ffa657;
+  }
+</style>
+
+<dialog id="modal-newsletter">
+  <Layout
+    title="¡Gracias por suscribirse!"
+    description="Tu suscripción al newsletter ha sido procesada correctamente."
+    pagefindIgnore
+  >
+    <div class="layout-grid-left" slot="left">
+      <!-- Empty left column for layout consistency -->
+    </div>
+    <div class="layout-grid-right" slot="right">
+      <Card>
+        <div class="header-container">
+          <Icon
+            type="lucide"
+            name="check"
+            width={24}
+            height={24}
+            class="glow-icon"
+          />
+          <h2>¡Muchísimas gracias!</h2>
+        </div>
+        <div class="prose">
+          <p>
+            Tu suscripción al newsletter de <strong>Hola Developers!</strong> ha sido
+            procesada correctamente.
+          </p>
+
+          <p>A partir de ahora recibirás notificaciones para mantenerte al tanto de todas y cada una de las novedades</p>
+          
+          <p>
+            Si proporcionaste tu usuario de <a
+              target="_blank"
+              href="https://discord.gg/wkvYgfGBWW">Discord</a
+            >, pronto tendrás acceso a un canal exclusivo donde podrás resolver
+            tus dudas sobre programación web.
+          </p>
+
+          <p style="margin-top: 2rem;">
+            <button
+              onclick="document.getElementById('modal-newsletter').close()"
+              class="mt-4 px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700"
+            >
+              Cerrar
+            </button>
+          </p>
+        </div>
+      </Card>
+    </div>
+  </Layout>
+</dialog>

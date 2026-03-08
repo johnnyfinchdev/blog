@@ -3,6 +3,7 @@ import type { HTMLAttributes } from "astro/types";
 import Card from "./Card.astro";
 import Icon from "./Icon.astro";
 import "../pages/styles/global.css";
+import NewsletterModal from "./NewsletterModal.astro";
 
 interface Props extends HTMLAttributes<"div"> {}
 
@@ -86,7 +87,7 @@ const { class: className, ...props } = Astro.props;
                 id="submit-btn"
                 type="submit"
                 class="relative inline-flex flex-1 px-3 py-2 text-white text-lg bg-gray-900 rounded-sm sm:mt-0 sm:w-auto whitespace-nowrap dark:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled
+                
               >
                 Suscribirse
               </button>
@@ -98,9 +99,10 @@ const { class: className, ...props } = Astro.props;
     </div>
   </div>
 </Card>
+<NewsletterModal />
 
 <script>
-  // 1. Definimos las funciones en el objeto window para que Turnstile las encuentre
+  // // 1. Definimos las funciones en el objeto window para que Turnstile las encuentre
   (window as any).onTurnstileSuccess = function (token: string) {
     const btn = document.getElementById("submit-btn") as HTMLButtonElement;
     if (btn) btn.disabled = false;
@@ -127,7 +129,7 @@ const { class: className, ...props } = Astro.props;
 
         const turnstileResponse = formData.get("cf-turnstile-response");
 
-        // 2. Validación extra: Si no hay token, no enviamos nada
+        // // 2. Validación extra: Si no hay token, no enviamos nada
         if (!turnstileResponse) {
           alert("Por favor, completa el captcha antes de continuar.");
           return;
@@ -160,18 +162,19 @@ const { class: className, ...props } = Astro.props;
 
           const result = await response.json();
 
-          // Si es exitoso, navega a /thanks
-          // if (result.success) {
-          //   if (document.startViewTransition) {
-          //     document.startViewTransition(() => {
-          //       window.location.href = "/thanks";
-          //     });
-          //   } else {
-          //     window.location.href = "/thanks";
-          //   }
-          // } else {
-          //   throw new Error(result.error || "Error desconocido");
-          // }
+          // Si es exitoso, muestra un modal
+          const modal = document.getElementById("modal-newsletter") as HTMLDialogElement;
+          if (result.success) {
+            if (document.startViewTransition) {
+              document.startViewTransition(() => {
+                modal?.showModal();
+              });
+            } else {
+              modal?.showModal();
+            }
+          } else {
+            throw new Error(result.error || "Error desconocido");
+          }
         } catch (error) {
           console.error("Error:", error);
           alert("Error al suscribirse. Intenta nuevamente.");
