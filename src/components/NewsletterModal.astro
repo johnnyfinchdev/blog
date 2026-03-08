@@ -68,21 +68,26 @@ const { class: className, resource = false, ...props } = Astro.props;
           height={24}
           class="glow-icon"
         />
-        <h2 id="modal-title">¡Ya estabas suscrito!</h2>
+        <h2 id="modal-title"></h2>
       </div>
 
       <div class="prose">
-        <p id="new-sub-text" style="display:none">
-          Tu suscripción al newsletter de <strong>Hola Developers!</strong> ha sido
-          procesada correctamente. A partir de ahora recibirás notificaciones...
-        </p>
+        <div id="new-sub-text" style="display:none">
+          <p>
+            Tu suscripción al newsletter de <strong>Hola Developers!</strong> ha sido
+            procesada correctamente. A partir de ahora recibirás notificaciones...
+          </p>
 
-        <p>
-          Si proporcionaste tu usuario de <a
-            target="_blank"
-            href="https://discord.gg/...">Discord</a
-          >, pronto tendrás acceso a un canal exclusivo...
-        </p>
+          <p>
+            Si proporcionaste tu usuario de <a
+              target="_blank"
+              href="https://discord.gg/...">Discord</a
+            >, pronto tendrás acceso a un canal exclusivo...
+          </p>
+        </div>
+        <div id="old-sub-text" style="display:none">
+          <p>Si no te ha llegado ningún correo, por favor, manda un correo <a href="mailto:newsletter@holadevolopers.blog">aquí</a> explicando que te ha pasado.</p>
+        </div>
 
         <p style="margin-top: 2rem;">
           <button
@@ -105,15 +110,17 @@ const { class: className, resource = false, ...props } = Astro.props;
   // Escucha un custom event para recibir parámetros
   modal.addEventListener("open-modal", (e: CustomEvent) => {
     const { existe } = e.detail;
-    alert(existe)
+    alert(existe);
 
     const title = document.getElementById("modal-title")!;
     const newSubText = document.getElementById("new-sub-text")!;
+    const oldSubText = document.getElementById("old-sub-text")!;
 
     title.textContent = existe
-      ? "¡Muchísimas gracias!"
-      : "¡Ya estabas suscrito!";
-    newSubText.style.display = existe ? "block" : "none";
+      ? "¡Ya estabas suscrito!"
+      : "¡Muchísimas gracias!";
+    newSubText.style.display = existe ? "none" : "block";
+    oldSubText.style.display = !existe ? "none" : "block";
 
     modal.showModal();
   });
