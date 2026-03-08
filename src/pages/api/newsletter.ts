@@ -10,41 +10,31 @@ export const POST: APIRoute = async (context) => {
 		const body = await context.request.json();
 		const { email, discord } = body;
 
-		// 1. Validación de entrada
-		if (!email || !email.includes('@')) {
-			return new Response(JSON.stringify({ success: false, error: 'Email inválido' }), { status: 400 });
-		}
-
 		const env = context.locals.runtime.env as Record<string, any>;
-		const RESEND_KEY = env.RESEND_API_KEY;
-		const resend = new Resend(RESEND_KEY);
+		const resend = new Resend(env.RESEND_API_KEY);
 
-		// 2. BUSCAR SI EL CONTACTO EXISTE
-		// En el SDK actual, get({ email }) es la forma directa.
-		const { data: existingContact } = await resend.contacts.get({
-			email: email
-		});
+		// 1. Verificación de existencia
+		const { data: existing } = await resend.contacts.get({ email });
 
-		// Si existe, detenemos el proceso para no reenviar el email de bienvenida
-		if (existingContact && existingContact.id) {
-			return new Response(
-				JSON.stringify({ success: true, existe: true, message: 'Ya suscrito' }),
-				{ status: 200 }
-			);
+		if (existing && (existing as any).id) {
+			return new Response(JSON.stringify({ success: true, existe: true }), { status: 200 });
 		}
 
-		// 3. CREAR EL CONTACTO
-		const { data: contactData, error: contactError } = await resend.contacts.create({
+		// 2. Crear el contacto primero
+		const { error: contactError } = await resend.contacts.create({
 			email: email,
 			firstName: discord || '',
 			unsubscribed: false,
 		});
 
 		if (contactError) {
-			throw new Error(contactError.message);
+			console.error('Error Resend Contactos:', contactError);
+			throw new Error('No se pudo crear el contacto');
 		}
 
-		const { error: mailError } = await resend.emails.send({
+		// 3. ENVIAR EMAIL (Aquí es donde suele fallar por tiempo)
+		// Usamos una constante para capturar el resultado antes de retornar nada
+		const emailResponse = await resend.emails.send({
 			from: 'Newsletter - Hola Developers! <newsletter@holadevelopers.blog>',
 			to: [email],
 			subject: 'Nos alegra que te hayas unido a la Newsletter, Developer',
@@ -68,15 +58,17 @@ export const POST: APIRoute = async (context) => {
             `,
 		});
 
-		if (mailError) {
-			console.error('Error de Resend al enviar mail:', mailError);
+		if (emailResponse.error) {
+			console.error('Error Resend Email:', emailResponse.error);
+			// Aunque el mail falle, el contacto ya se creó, 
+			// pero notificamos el error en consola para debuggear.
 		}
 
+		// 4. Solo respondemos cuando AMBAS promesas terminaron
 		return new Response(
-			JSON.stringify({ success: true, existe: false, message: 'Suscrito correctamente' }),
+			JSON.stringify({ success: true, existe: false, message: 'Proceso completado' }),
 			{ status: 200 }
 		);
-
 
 	} catch (error) {
 		console.error('Error en newsletter:', error);
