@@ -63,7 +63,7 @@ export const POST: APIRoute = async (context) => {
 			return new Response(JSON.stringify({
 				success: false,
 				error: 'Contacto creado, pero email falló',
-				details: mailError
+				debug: mailError.message
 			}), { status: 500 });
 		}
 
