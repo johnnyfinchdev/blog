@@ -10,7 +10,7 @@ export const POST: APIRoute = async (context) => {
 		const body = await context.request.json();
 		const { email, discord } = body;
 
-		// Validación básica
+		// 1. Validación de entrada
 		if (!email || !email.includes('@')) {
 			return new Response(JSON.stringify({ success: false, error: 'Email inválido' }), { status: 400 });
 		}
@@ -19,23 +19,28 @@ export const POST: APIRoute = async (context) => {
 		const RESEND_KEY = env.RESEND_API_KEY;
 		const resend = new Resend(RESEND_KEY);
 
-		// Intentar crear el contacto directamente
-		// Resend devolverá un error si ya existe, lo cual manejaremos.
+		// 2. BUSCAR SI EL CONTACTO EXISTE
+		// En el SDK actual, get({ email }) es la forma directa.
+		const { data: existingContact } = await resend.contacts.get({
+			email: email
+		});
+
+		// Si existe, detenemos el proceso para no reenviar el email de bienvenida
+		if (existingContact && existingContact.id) {
+			return new Response(
+				JSON.stringify({ success: true, existe: true, message: 'Ya suscrito' }),
+				{ status: 200 }
+			);
+		}
+
+		// 3. CREAR EL CONTACTO
 		const { data: contactData, error: contactError } = await resend.contacts.create({
 			email: email,
 			firstName: discord || '',
 			unsubscribed: false,
 		});
 
-		// 2. Si hay error y es porque ya existe, avisamos.
-		// Nota: Resend a veces devuelve error 409 si el contacto ya existe.
 		if (contactError) {
-			if (contactError.message.includes('already exists') || (contactError as any).status === 409) {
-				return new Response(
-					JSON.stringify({ success: true, existe: true, message: 'Ya estás suscrito' }),
-					{ status: 200 }
-				);
-			}
 			throw new Error(contactError.message);
 		}
 
@@ -64,8 +69,9 @@ export const POST: APIRoute = async (context) => {
 		});
 
 		if (mailError) {
-			console.error('Error enviando email:', mailError);
+			console.error('Error de Resend al enviar mail:', mailError);
 		}
+
 		return new Response(
 			JSON.stringify({ success: true, existe: false, message: 'Suscrito correctamente' }),
 			{ status: 200 }
