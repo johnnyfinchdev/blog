@@ -74,7 +74,7 @@ export const POST: APIRoute = async (context) => {
 		}
 
 		return new Response(
-			JSON.stringify({ success: true, existe: false, message:'gracias'}),
+			JSON.stringify({ success: true, existe: false, message:JSON.stringify(contactData)}),
 			{ status: 200 }
 		);
 
