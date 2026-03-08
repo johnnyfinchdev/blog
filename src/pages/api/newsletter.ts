@@ -67,11 +67,15 @@ export const POST: APIRoute = async (context) => {
 			if (mailError) {
 				console.error('Error enviando email:', mailError);
 			}
+
+			return new Response(
+				JSON.stringify({ success: true, existe: false }),
+				{ status: 200, headers: { 'Content-Type': 'application/json' } }
+			);
 		}
 
-
 		return new Response(
-			JSON.stringify({ success: true }),
+			JSON.stringify({ success: true, existe: true }),
 			{ status: 200, headers: { 'Content-Type': 'application/json' } }
 		);
 	} catch (error) {
