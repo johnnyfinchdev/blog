@@ -161,17 +161,17 @@ const { class: className, ...props } = Astro.props;
           const result = await response.json();
 
           // Si es exitoso, navega a /thanks
-          if (result.success) {
-            if (document.startViewTransition) {
-              document.startViewTransition(() => {
-                window.location.href = "/thanks";
-              });
-            } else {
-              window.location.href = "/thanks";
-            }
-          } else {
-            throw new Error(result.error || "Error desconocido");
-          }
+          // if (result.success) {
+          //   if (document.startViewTransition) {
+          //     document.startViewTransition(() => {
+          //       window.location.href = "/thanks";
+          //     });
+          //   } else {
+          //     window.location.href = "/thanks";
+          //   }
+          // } else {
+          //   throw new Error(result.error || "Error desconocido");
+          // }
         } catch (error) {
           console.error("Error:", error);
           alert("Error al suscribirse. Intenta nuevamente.");
