@@ -73,14 +73,16 @@ const { class: className, resource = false, ...props } = Astro.props;
       </div>
 
       <div class="prose">
-        <p id="modal-resource-text" style="display:none">
+        <p id="new-sub-text" style="display:none">
           Tu suscripción al newsletter de <strong>Hola Developers!</strong> ha sido
           procesada correctamente. A partir de ahora recibirás notificaciones...
         </p>
 
         <p>
-          Si proporcionaste tu usuario de target="_blank"
-          href="https://discord.gg/wkvYgfGBWW">Discord
+          Si proporcionaste tu usuario de <a
+            target="_blank"
+            href="https://discord.gg/...">Discord</a
+          >, pronto tendrás acceso a un canal exclusivo...
         </p>
 
         <p style="margin-top: 2rem;">
@@ -104,14 +106,15 @@ const { class: className, resource = false, ...props } = Astro.props;
   // Escucha un custom event para recibir parámetros
   modal.addEventListener("open-modal", (e: CustomEvent) => {
     const { existe } = e.detail;
+    alert(existe)
 
     const title = document.getElementById("modal-title")!;
-    const resourceText = document.getElementById("modal-resource-text")!;
+    const newSubText = document.getElementById("new-sub-text")!;
 
     title.textContent = existe
       ? "¡Muchísimas gracias!"
       : "¡Ya estabas suscrito!";
-    resourceText.style.display = existe ? "block" : "none";
+    newSubText.style.display = existe ? "block" : "none";
 
     modal.showModal();
   });
