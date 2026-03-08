@@ -30,7 +30,7 @@ export const POST: APIRoute = async (context) => {
 		const subCheck = await resend.contacts.get({
 			email: email,
 		});
-					// 3. Enviar email de bienvenida/confirmación
+		// 3. Enviar email de bienvenida/confirmación
 			const { error: mailError } = await resend.emails.send({
 				from: 'Newsletter - Hola Developers! <newsletter@holadevelopers.blog>',
 				to: [email],
@@ -52,6 +52,7 @@ export const POST: APIRoute = async (context) => {
 					<li>Publicidad</li>
 				</ul>
 				<h3>Nos vemos en el código.</h3>
+				<p>Te puedes desuscribir aquí: {{{RESEND_UNSUBSCRIBE_URL}}}</p>
             `,
 			});
 			if (mailError) {
@@ -65,7 +66,7 @@ export const POST: APIRoute = async (context) => {
 				unsubscribed: false,
 			});
 
-
+			
 
 			return new Response(
 				JSON.stringify({ success: true, existe: false }),
