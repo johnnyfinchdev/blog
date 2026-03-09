@@ -65,6 +65,31 @@ const { title, description, image, pagefindIgnore, article } = Astro.props;
 		<meta name="twitter:image" content={image?.src || '/img/og.png'} />
 	</head>
 	<body>
+		<style>
+			#topBtn {
+			display: none;
+			position: fixed;
+			bottom: 20px;
+			right: 15px;
+			z-index: 99;
+			font-size: 18px;
+			border: none;
+			outline: none;
+			background-color: rgb(255, 145, 112);
+			color: black;
+			cursor: pointer;
+			padding: 15px;
+			border-radius: 0.25rem;
+			rotate: calc(270deg);
+			opacity: 30%;
+		}
+
+		#topBtn:hover {
+			background-color: rgb(122, 109, 105);
+			color: white;
+		}
+	</style>
+		<button id="topBtn" title="Ir arriba">&#10140;</button>
 		<main data-pagefind-ignore={pagefindIgnore}>
 			<Navbar />
 			<LayoutGrid>
@@ -74,5 +99,23 @@ const { title, description, image, pagefindIgnore, article } = Astro.props;
 			<slot name="404" />
 		</main>
 		<Background />
+
+
+	<script>
+		let topBtn = document.getElementById("topBtn");
+
+		window.onscroll = function() {
+			if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+				topBtn.style.display = "block";
+			} else {
+				topBtn.style.display = "none";
+			}
+		};
+
+		// Aquí sí tiene acceso al botón
+		topBtn.addEventListener("click", function() {
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+		});
+	</script>
 	</body>
 </html>
