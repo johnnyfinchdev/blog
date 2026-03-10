@@ -33,7 +33,7 @@ const challenges = await getCollection('challenges');
 				<h2>Últimos retos</h2>
 			</div>
 			<div class="content-container">
-				{challenges.length === 0 ? <Message resource='posts'/> : challenges.sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).map((challenge) => (
+				{challenges.length === 0 ? <Message resource='challenges'/> : [...challenges].sort((a, b) => b.data.title.localeCompare(a.data.title)).map((challenge) => (
 					<a href={`/challenges/${challenge.id}`} class="post-container">
 						<div class="post-header">
 							<h3>{challenge.data.title}</h3>

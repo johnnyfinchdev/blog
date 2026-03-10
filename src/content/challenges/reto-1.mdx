@@ -1,0 +1,126 @@
+---
+title: Reto 1
+date: 10-03-2026
+description: Plantilla para los retos de JavaScript
+image: "../assets/challenges/retos-js.jpg"
+info:
+  - text: Únete a Discord
+    link: https://discord.gg/wkvYgfGBWW
+    icon:
+      type: "simple-icons"
+      name: "discord"
+---
+
+{/* Seccion Intro */}
+# ¡Hola Developers!
+  > En este reto pondrás a prueba tus habilidades con **strings** en JavaScript.
+  Tu misión será crear una función que reciba una cadena de texto y devuelva la cadena **invertida**.
+
+{/* Seccion Enunciado */}
+## Enunciado
+
+  ```json title="index.js"
+  /* 
+  Crea una función llamada `invertirCadena` que reciba una cadena de texto.
+  Debe devolver la misma cadena pero con los caracteres en orden inverso.
+
+  Ejemplo:
+  Entrada: "hola mundo"
+  Salida: "odnum aloh"
+  */
+  ```
+
+
+
+<br/>
+
+
+
+{/* Seccion Pistas */}
+
+<div style={"background-color: #F8D30015; padding:10px; border-radius:10px;"}>
+
+  {/* Pistas header*/}
+    <div style={"display:flex; flex-direction: row; align-content: center !important;"}>
+      <h1 style={"margin-top:0 !important;"}>Pistas</h1> 
+    </div>
+    {/* Pista 1 */}
+    <details>
+      <summary>Pista 1</summary>
+      Piensa en cómo convertir una cadena en un array de caracteres.
+
+      ```javascript title="pista1.js"
+      const chars = cadena.split('');
+      ```
+    </details>
+
+<br/>
+
+    {/* Pista 2 */}
+    <details>
+      <summary>Pista 2</summary>
+      Una vez tengas el array, puedes invertirlo con el método **reverse()**.
+
+
+      ```javascript title="pista2.js"
+      chars.reverse();
+      ```
+    </details>
+
+<br/>
+
+
+
+    {/* Pista 3 */}
+    <details>
+      <summary>Pista 3</summary>
+      Finalmente, une los caracteres de nuevo con **join()**.
+
+      ```javascript title="pista3.js"
+      chars.join('');
+      ```
+    </details>
+<br/>
+
+
+    {/* Pista 4 */}
+    <details>
+      <summary>Pista 4</summary>
+      Puedes encadenar los tres métodos en una sola línea.
+
+
+      ```javascript title="pista4.js"
+      cadena.split('').reverse().join('');
+      ```
+    </details>
+  </div>
+<br/>
+
+{/* Seccion Solución */}
+
+<div style={"background-color: #F8000015; padding:10px; border-radius:10px"}>
+  {/* Solución header*/}
+  <div style={"display:flex; flex-direction: row; align-content: center !important;"}>
+    <h1 style={"margin-top:0 !important;"}>Solución</h1> 
+    <h4 style={"margin-left:5px;margin-top:0 !important; color: #A00000A6;"}>Danger zone</h4>
+  </div>
+
+    {/* Solución */}
+    <details>
+      <summary>Solución</summary>
+        Aquí tienes una posible implementación de la función:
+
+        ```javascript title="solucion.js"
+        function invertirCadena(cadena) {
+          return cadena.split('').reverse().join('');
+        }
+
+
+
+        // Ejemplo de uso:
+        console.log(invertirCadena("hola mundo"));
+        // Resultado esperado: "odnum aloh"
+        ```
+
+    </details>
+</div>

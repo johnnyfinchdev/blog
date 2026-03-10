@@ -1,0 +1,105 @@
+---
+title: Reto 4
+date: 10-03-2026
+description: Plantilla para los retos de JavaScript
+image: "../assets/challenges/retos-js.jpg"
+info:
+  - text: Únete a Discord
+    link: https://discord.gg/wkvYgfGBWW
+    icon:
+      type: "simple-icons"
+      name: "discord"
+---
+
+{/* Seccion Intro */}
+# ¡Hola Developers!
+
+  > En este reto pondrás a prueba tus habilidades con **strings** y **lógica** en JavaScript.
+  Tu misión será crear una función que determine si una palabra o frase es un **palíndromo** (se lee igual al derecho que al revés).
+
+{/* Seccion Enunciado */}
+## Enunciado
+
+  ```json title="index.js"
+  /* 
+  Crea una función llamada `esPalindromo` que reciba una cadena de texto.
+  Debe devolver true si la cadena es un palíndromo y false si no lo es.
+  Ignora espacios, tildes y diferencias entre mayúsculas y minúsculas.
+
+  Ejemplo:
+  Entrada: "Anita lava la tina"
+  Salida: true
+  
+  Entrada: "Hola"
+  Salida: false
+  */
+  ```
+
+<br/>
+
+{/* Seccion Pistas */}
+<div style={"background-color: #F8D30015; padding:10px; border-radius:10px;"}>
+  {/* Pistas header*/}
+    <div style={"display:flex; flex-direction: row; align-content: center !important;"}>
+      <h1 style={"margin-top:0 !important;"}>Pistas</h1> 
+    </div>
+    {/* Pista 1 */}
+    <details>
+      <summary>Pista 1</summary>
+      Normaliza la cadena: conviértela a minúsculas y elimina los espacios.
+
+      ```javascript title="pista1.js"
+      const limpia = cadena.toLowerCase().replace(/\s/g, '');
+      ```
+    </details>
+<br/>
+
+    {/* Pista 2 */}
+    <details>
+      <summary>Pista 2</summary>
+      Invierte la cadena normalizada (como en el Reto 1).
+
+      ```javascript title="pista2.js"
+      const invertida = limpia.split('').reverse().join('');
+      ```
+    </details>
+<br/>
+
+    {/* Pista 3 */}
+    <details>
+      <summary>Pista 3</summary>
+      Compara la cadena normalizada con su versión invertida.
+
+      ```javascript title="pista3.js"
+      return limpia === invertida;
+      ```
+    </details>
+  </div>
+<br/>
+
+{/* Seccion Solución */}
+<div style={"background-color: #F8000015; padding:10px; border-radius:10px"}>
+  {/* Solución header*/}
+  <div style={"display:flex; flex-direction: row; align-content: center !important;"}>
+    <h1 style={"margin-top:0 !important;"}>Solución</h1> 
+    <h4 style={"margin-left:5px;margin-top:0 !important; color: #A00000A6;"}>Danger zone</h4>
+  </div>
+
+    {/* Solución */}
+    <details>
+      <summary>Solución</summary>
+        Aquí tienes una posible implementación de la función:
+
+        ```javascript title="solucion.js"
+        function esPalindromo(cadena) {
+          const limpia = cadena.toLowerCase().replace(/\s/g, '');
+          const invertida = limpia.split('').reverse().join('');
+          return limpia === invertida;
+        }
+
+        // Ejemplo de uso:
+        console.log(esPalindromo("Anita lava la tina")); // true
+        console.log(esPalindromo("Hola"));               // false
+        ```
+    </details>
+</div>

@@ -1,0 +1,113 @@
+---
+
+title: Reto 2
+date: 10-03-2026
+description: Plantilla para los retos de JavaScript
+image: "../assets/challenges/retos-js.jpg"
+info:
+  - text: Únete a Discord
+    link: https://discord.gg/wkvYgfGBWW
+    icon:
+      type: "simple-icons"
+      name: "discord"
+---
+
+{/* Seccion Intro */}
+# ¡Hola Developers!
+
+  > En este reto pondrás a prueba tus habilidades con **strings** e **iteración** en JavaScript.
+  Tu misión será crear una función que reciba una cadena de texto y devuelva el **número de vocales** que contiene.
+
+{/* Seccion Enunciado */}
+## Enunciado
+
+  ```json title="index.js"
+  /* 
+  Crea una función llamada `contarVocales` que reciba una cadena de texto.
+  Debe devolver el número total de vocales (a, e, i, o, u) que contiene la cadena,
+  sin distinguir entre mayúsculas y minúsculas.
+
+  Ejemplo:
+  Entrada: "Hola Mundo"
+  Salida: 4
+  */
+  ```
+
+<br/>
+
+{/* Seccion Pistas */}
+<div style={"background-color: #F8D30015; padding:10px; border-radius:10px;"}>
+  {/* Pistas header*/}
+    <div style={"display:flex; flex-direction: row; align-content: center !important;"}>
+      <h1 style={"margin-top:0 !important;"}>Pistas</h1> 
+    </div>
+    {/* Pista 1 */}
+    <details>
+      <summary>Pista 1</summary>
+      Convierte la cadena a minúsculas para simplificar la comparación.
+
+      ```javascript title="pista1.js"
+      const cadenaMin = cadena.toLowerCase();
+      ```
+    </details>
+<br/>
+
+    {/* Pista 2 */}
+    <details>
+      <summary>Pista 2</summary>
+      Define un string o array con las vocales que quieres detectar.
+
+      ```javascript title="pista2.js"
+      const vocales = 'aeiou';
+      ```
+    </details>
+<br/>
+
+    {/* Pista 3 */}
+    <details>
+      <summary>Pista 3</summary>
+      Puedes usar **split('')** y **filter()** para quedarte solo con los caracteres que sean vocales.
+
+      ```javascript title="pista3.js"
+      cadena.split('').filter(c => vocales.includes(c));
+      ```
+    </details>
+<br/>
+
+    {/* Pista 4 */}
+    <details>
+      <summary>Pista 4</summary>
+      El largo del array resultante es el número de vocales. Usa **.length**.
+
+      ```javascript title="pista4.js"
+      const count = cadena.split('').filter(c => vocales.includes(c)).length;
+      ```
+    </details>
+  </div>
+<br/>
+
+{/* Seccion Solución */}
+<div style={"background-color: #F8000015; padding:10px; border-radius:10px"}>
+  {/* Solución header*/}
+  <div style={"display:flex; flex-direction: row; align-content: center !important;"}>
+    <h1 style={"margin-top:0 !important;"}>Solución</h1> 
+    <h4 style={"margin-left:5px;margin-top:0 !important; color: #A00000A6;"}>Danger zone</h4>
+  </div>
+
+    {/* Solución */}
+    <details>
+      <summary>Solución</summary>
+        Aquí tienes una posible implementación de la función:
+
+        ```javascript title="solucion.js"
+        function contarVocales(cadena) {
+          const vocales = 'aeiou';
+          return cadena.toLowerCase().split('').filter(c => vocales.includes(c)).length;
+        }
+
+        // Ejemplo de uso:
+        console.log(contarVocales("Hola Mundo"));
+        // Resultado esperado: 4
+        ```
+    </details>
+</div>

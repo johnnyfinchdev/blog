@@ -1,0 +1,113 @@
+---
+title: Reto 3
+date: 10-03-2026
+description: Plantilla para los retos de JavaScript
+image: "../assets/challenges/retos-js.jpg"
+info:
+  - text: Únete a Discord
+    link: https://discord.gg/wkvYgfGBWW
+    icon:
+      type: "simple-icons"
+      name: "discord"
+---
+
+{/* Seccion Intro */}
+# ¡Hola Developers!
+
+  > En este reto pondrás a prueba tu lógica con **condicionales** y **bucles** en JavaScript.
+  Tu misión será implementar el clásico problema **FizzBuzz**: dado un número N, devuelve un array con los resultados del 1 al N.
+
+{/* Seccion Enunciado */}
+## Enunciado
+
+  ```json title="index.js"
+  /* 
+  Crea una función llamada `fizzBuzz` que reciba un número entero N.
+  Debe devolver un array de N elementos donde:
+  - Los múltiplos de 3 son reemplazados por "Fizz"
+  - Los múltiplos de 5 son reemplazados por "Buzz"
+  - Los múltiplos de 3 y 5 son reemplazados por "FizzBuzz"
+  - El resto de números se incluyen tal cual.
+
+  Ejemplo:
+  Entrada: 15
+  Salida: [1, 2, "Fizz", 4, "Buzz", "Fizz", 7, 8, "Fizz", "Buzz", 11, "Fizz", 13, 14, "FizzBuzz"]
+  */
+  ```
+
+<br/>
+
+{/* Seccion Pistas */}
+<div style={"background-color: #F8D30015; padding:10px; border-radius:10px;"}>
+  {/* Pistas header*/}
+    <div style={"display:flex; flex-direction: row; align-content: center !important;"}>
+      <h1 style={"margin-top:0 !important;"}>Pistas</h1> 
+    </div>
+    {/* Pista 1 */}
+    <details>
+      <summary>Pista 1</summary>
+      Itera del 1 al N con un bucle **for** o usa **Array.from**.
+
+      ```javascript title="pista1.js"
+      for (let i = 1; i <= n; i++) { ... }
+      ```
+    </details>
+<br/>
+
+    {/* Pista 2 */}
+    <details>
+      <summary>Pista 2</summary>
+      Usa el operador **módulo (%)** para comprobar divisibilidad.
+
+      ```javascript title="pista2.js"
+      i % 3 === 0 // true si i es múltiplo de 3
+      ```
+    </details>
+<br/>
+
+    {/* Pista 3 */}
+    <details>
+      <summary>Pista 3</summary>
+      Comprueba primero el caso de **FizzBuzz** (múltiplo de 3 y 5) antes que los casos individuales.
+
+      ```javascript title="pista3.js"
+      if (i % 15 === 0) resultado.push("FizzBuzz");
+      else if (i % 3 === 0) resultado.push("Fizz");
+      else if (i % 5 === 0) resultado.push("Buzz");
+      else resultado.push(i);
+      ```
+    </details>
+  </div>
+<br/>
+
+{/* Seccion Solución */}
+<div style={"background-color: #F8000015; padding:10px; border-radius:10px"}>
+  {/* Solución header*/}
+  <div style={"display:flex; flex-direction: row; align-content: center !important;"}>
+    <h1 style={"margin-top:0 !important;"}>Solución</h1> 
+    <h4 style={"margin-left:5px;margin-top:0 !important; color: #A00000A6;"}>Danger zone</h4>
+  </div>
+
+    {/* Solución */}
+    <details>
+      <summary>Solución</summary>
+        Aquí tienes una posible implementación de la función:
+
+        ```javascript title="solucion.js"
+        function fizzBuzz(n) {
+          const resultado = [];
+          for (let i = 1; i <= n; i++) {
+            if (i % 15 === 0) resultado.push("FizzBuzz");
+            else if (i % 3 === 0) resultado.push("Fizz");
+            else if (i % 5 === 0) resultado.push("Buzz");
+            else resultado.push(i);
+          }
+          return resultado;
+        }
+
+        // Ejemplo de uso:
+        console.log(fizzBuzz(15));
+        // Resultado esperado: [1, 2, "Fizz", 4, "Buzz", "Fizz", 7, 8, "Fizz", "Buzz", 11, "Fizz", 13, 14, "FizzBuzz"]
+        ```
+    </details>
+</div>

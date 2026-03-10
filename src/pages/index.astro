@@ -46,7 +46,8 @@ const { Content: About } = await render(about!);
       <p class="subtitle">
         {subtitle}
         <a href="https://linktr.ee/johnnyfinchdev" target="_blank"
-          >JohnnyFinchDev</a>
+          >JohnnyFinchDev</a
+        >
       </p>
       <ul class="overview-list">
         {
@@ -190,8 +191,8 @@ const { Content: About } = await render(about!);
           challenges.length === 0 ? (
             <Message resource="retos" />
           ) : (
-            challenges
-              .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+            [...challenges]
+              .sort((a, b) => b.data.title.localeCompare(a.data.title))
               .slice(0, 2)
               .map((challenge) => (
                 <a href={`/challenges/${challenge.id}`} class="post-container">
@@ -206,6 +207,19 @@ const { Content: About } = await render(about!);
               ))
           )
         }
+        <a href="/challenges" style={{ color: "#FFEAE3" }}>
+          <div
+            style={{
+              backgroundColor: "#9C5843FF",
+              padding: "10px",
+              margin: "10px",
+              borderRadius: "0.25rem",
+              textAlign: "center",
+            }}
+          >
+            Ver todos los retos ->
+          </div>
+        </a>
       </div>
     </Card>
     <Newsletter />

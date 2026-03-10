@@ -1,0 +1,112 @@
+---
+title: Reto 5
+date: 10-03-2026
+description: Plantilla para los retos de JavaScript
+image: "../assets/challenges/retos-js.jpg"
+info:
+  - text: Únete a Discord
+    link: https://discord.gg/wkvYgfGBWW
+    icon:
+      type: "simple-icons"
+      name: "discord"
+---
+
+{/* Seccion Intro */}
+# ¡Hola Developers!
+
+  > En este reto pondrás a prueba tus habilidades con **arrays anidados** y **recursión** en JavaScript.
+  Tu misión será crear una función que reciba un array con posibles subarrays y devuelva todos sus elementos en un **único array plano**.
+
+{/* Seccion Enunciado */}
+## Enunciado
+
+  ```json title="index.js"
+  /* 
+  Crea una función llamada `aplanar` que reciba un array que puede contener
+  otros arrays anidados a cualquier profundidad.
+  Debe devolver un nuevo array con todos los valores en un único nivel.
+
+  Ejemplo:
+  Entrada: [1, [2, 3], [4, [5, 6]], 7]
+  Salida: [1, 2, 3, 4, 5, 6, 7]
+  */
+  ```
+
+<br/>
+
+{/* Seccion Pistas */}
+<div style={"background-color: #F8D30015; padding:10px; border-radius:10px;"}>
+  {/* Pistas header*/}
+    <div style={"display:flex; flex-direction: row; align-content: center !important;"}>
+      <h1 style={"margin-top:0 !important;"}>Pistas</h1> 
+    </div>
+    {/* Pista 1 */}
+    <details>
+      <summary>Pista 1</summary>
+      Puedes usar el método nativo **flat()** con el argumento **Infinity** para aplanar a cualquier profundidad.
+
+      ```javascript title="pista1.js"
+      arr.flat(Infinity);
+      ```
+    </details>
+<br/>
+
+    {/* Pista 2 */}
+    <details>
+      <summary>Pista 2</summary>
+      Si quieres implementarlo manualmente, piensa en **recursión**: si un elemento es un array, llama a la función sobre él.
+
+      ```javascript title="pista2.js"
+      if (Array.isArray(elemento)) {
+        return aplanar(elemento);
+      }
+      ```
+    </details>
+<br/>
+
+    {/* Pista 3 */}
+    <details>
+      <summary>Pista 3</summary>
+      Puedes usar **reduce()** junto con la recursión para ir acumulando los valores.
+
+      ```javascript title="pista3.js"
+      arr.reduce((acc, val) =>
+        acc.concat(Array.isArray(val) ? aplanar(val) : val), []
+      );
+      ```
+    </details>
+  </div>
+<br/>
+
+{/* Seccion Solución */}
+<div style={"background-color: #F8000015; padding:10px; border-radius:10px"}>
+  {/* Solución header*/}
+  <div style={"display:flex; flex-direction: row; align-content: center !important;"}>
+    <h1 style={"margin-top:0 !important;"}>Solución</h1> 
+    <h4 style={"margin-left:5px;margin-top:0 !important; color: #A00000A6;"}>Danger zone</h4>
+  </div>
+
+    {/* Solución */}
+    <details>
+      <summary>Solución</summary>
+        Aquí tienes una posible implementación de la función:
+
+        ```javascript title="solucion.js"
+        // Opción 1: usando flat nativo
+        function aplanar(arr) {
+          return arr.flat(Infinity);
+        }
+
+        // Opción 2: implementación recursiva manual
+        function aplanarManual(arr) {
+          return arr.reduce((acc, val) =>
+            acc.concat(Array.isArray(val) ? aplanarManual(val) : val), []
+          );
+        }
+
+        // Ejemplo de uso:
+        console.log(aplanar([1, [2, 3], [4, [5, 6]], 7]));
+        // Resultado esperado: [1, 2, 3, 4, 5, 6, 7]
+        ```
+    </details>
+</div>
