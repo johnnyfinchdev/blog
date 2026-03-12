@@ -199,11 +199,13 @@ const { class: className, ...props } = Astro.props;
         try {
           submitButton.disabled = true;
           submitButton.textContent = "Enviando...";
+          const termsCheck = document.getElementById('terms-conditions') as HTMLInputElement
 
           // Capturamos los datos reales
           const payload = {
             email: formData.get("email"),
             discord: formData.get("discord"),
+            terms: termsCheck.checked,
             // Turnstile añade automáticamente un input llamado 'cf-turnstile-response'
             turnstileToken: formData.get("cf-turnstile-response"),
           };
@@ -234,7 +236,10 @@ const { class: className, ...props } = Astro.props;
           }
         } catch (error) {
           console.error("Error:", error);
-          alert("Error al suscribirse. Intenta nuevamente.");
+          // alert("Error al suscribirse. Intenta nuevamente.");
+          errorMsg.style.visibility = "visible";
+          errorMsg.innerText =
+            "Error al suscribirse. Intenta nuevamente.";
           submitButton.disabled = false;
           submitButton.textContent = originalText;
         }

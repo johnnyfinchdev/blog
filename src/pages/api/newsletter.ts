@@ -8,7 +8,11 @@ export const POST: APIRoute = async (context) => {
 	try {
 		// Obtener los datos del JSON
 		const body = await context.request.json();
-		const { email, discord } = body;
+		const { email, discord, terms } = body;
+
+		if(!email || !terms){
+			throw new Error('Faltan datos por rellenar');
+		}
 
 		const env = context.locals.runtime.env as Record<string, any>;
 		const resend = new Resend(env.RESEND_API_KEY);
