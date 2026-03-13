@@ -38,6 +38,7 @@ const path = Astro.url.pathname;
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'k' && e.ctrlKey) {
+      e.preventDefault();
       searchElement.focus();
     }
 
