@@ -11,6 +11,7 @@ import { render } from "astro:content";
 import { getCollection } from "astro:content";
 import { giscus } from "spectre:globals";
 import BucketVideo from "../../components/BucketVideo.astro";
+import Icon from "../../components/Icon.astro";
 /**
  * Estimates the time it takes to read a post in minutes based on:
  * - A reading speed of 200 words per minute
@@ -105,11 +106,27 @@ const { Content, headings } = await render(post);
           </div>
         </div>
       </div>
+      {
+        post.data.updatedAt ? (
+          <div style="position: relative;">
+            <small style="position:absolute; display:flex; gap:0.5em; align-items: center; color:#838383">
+              <Icon
+                type="lucide"
+                name="calendar-arrow-up"
+                width={24}
+                height={24}
+              />
+              {post.data.updatedAt.toLocaleDateString()}
+            </small>
+          </div>
+        ) : null
+      }
       <Content />
+
       {
         post.data.video && (
           <div style="display:flex; justify-content: center;">
-            <BucketVideo resource={post.data.video}/>
+            <BucketVideo resource={post.data.video} />
           </div>
         )
       }

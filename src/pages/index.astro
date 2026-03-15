@@ -130,9 +130,24 @@ const { Content: About } = await render(about!);
                 <a href={`/blog/${post.id}`} class="post-container">
                   <div class="post-header">
                     <h3>{post.data.title}</h3>
-                    <span class="post-date">
-                      {post.data.createdAt.toLocaleDateString()}
-                    </span>
+                    <div class="dates flex flex-col-reverse">
+                      {post.data.updatedAt ? (
+                        <div class="relative ">
+                          <small class="absolute top-0 right-0 flex flex-row items-center gap-1 text-xs text-gray-500 leading-none pointer-events-none">
+                            <Icon
+                              type="lucide"
+                              name="calendar-arrow-up"
+                              width={24}
+                              height={24}
+                            />
+                            {post.data.updatedAt.toLocaleDateString()}
+                          </small>
+                        </div>
+                      ) : null}
+                      <span class="post-date">
+                        {post.data.createdAt.toLocaleDateString()}
+                      </span>
+                    </div>
                   </div>
                   <span>{post.data.description}</span>
                 </a>
