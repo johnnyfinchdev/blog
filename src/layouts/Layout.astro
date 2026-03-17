@@ -41,6 +41,7 @@ const { title, description, image, pagefindIgnore, article } = Astro.props;
 		<meta name="og:title" content={title} />
 		{description && <meta name="og:description" content={description} />}
 		<meta name="og:image" content={image?.src || '/img/og.jpg'} />
+		<meta property="og:logo" content="/favicon.svg" />
 		<meta name="og:url" content={Astro.site} />
 		{!article && <meta name="og:type" content="website" />}
 		<meta name="og:locale" content="en" />
