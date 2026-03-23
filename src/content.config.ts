@@ -67,12 +67,11 @@ const projects = defineCollection({
     description: z.string(),
     date: z.coerce.date(),
     image: image(),
-    link: z.string().url().optional(),
+    gitData: z.string(),
     info: z.array(
       z.object({
         text: z.string(),
         icon: z.union([lucideIconSchema, simpleIconSchema]),
-        link: z.string().url().optional(),
       })
     )
   })

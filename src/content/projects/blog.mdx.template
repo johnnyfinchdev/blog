@@ -1,0 +1,12 @@
+---
+title: Blog
+date: 12-29-2024
+image: ../assets/template.png
+description: Spectre is a terminal-inspired theme for Astro, built using Astro and TypeScript.
+gitData: johnnyfinchdev/blog
+info:
+  - text: GitHub
+    icon:
+      type: lucide
+      name: github
+---

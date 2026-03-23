@@ -1,15 +1,14 @@
 ---
 import "../../styles/article.css";
-
 import Card from "../../components/Card.astro";
 import Layout from "../../layouts/Layout.astro";
-
 import type { GetStaticPaths } from "astro";
 import type { CollectionEntry } from "astro:content";
-import { render } from "astro:content";
 import { getCollection } from "astro:content";
 import ImageGlow from "../../components/ImageGlow.astro";
 import Icon from "../../components/Icon.astro";
+
+import { marked } from 'marked';
 
 interface Props {
   project: CollectionEntry<"projects">;
@@ -19,16 +18,37 @@ const { project } = Astro.props;
 
 export const getStaticPaths = (async () => {
   const projects = await getCollection("projects");
-
   return projects.map((project) => ({
     params: { project: project.id },
     props: { project },
   }));
 }) satisfies GetStaticPaths;
 
-console.log(project.data.info);
+// Lógica para obtener el README remoto
+let remoteContent = "";
+const repo = project.data.gitData;
 
-const { Content } = await render(project);
+if (repo) {
+  try {
+    // Intentamos obtener el README de la rama 'main' (o 'master' si falla)
+    const response = await fetch(`https://raw.githubusercontent.com/${repo}/main/README.md`);
+    
+    if (response.ok) {
+      const markdown = await response.text();
+      // Parseamos el markdown a HTML
+      remoteContent = await marked.parse(markdown);
+    } else {
+      // Intento alternativo por si la rama es 'master'
+      const fallbackResponse = await fetch(`https://raw.githubusercontent.com/${repo}/master/README.md`);
+      if (fallbackResponse.ok) {
+        const markdown = await fallbackResponse.text();
+        remoteContent = await marked.parse(markdown);
+      }
+    }
+  } catch (e) {
+    console.error(`Error cargando el README para ${repo}:`, e);
+  }
+}
 ---
 
 <Layout
@@ -44,13 +64,13 @@ const { Content } = await render(project);
       <h2 class="no-mt">Info</h2>
       <ul class="overview-list">
         {
-          project.data.info.map((info) => {
-            const Tag = info.link ? "a" : "div";
+          project.data.info.map((info: { icon: { type: string; name: any; }; text: unknown; }) => {
+            const Tag = repo ? "a" : "div";
             return (
               <li>
-                <Tag href={info.link} class="project-info-item">
+                <Tag href={`https://github.com/${repo}`} class="project-info-item" target="_blank">
                   <Icon
-                    type={info.icon.type}
+                    type={info.icon.type as "lucide" | "simple-icons"}
                     name={info.icon.name as any}
                     width={24}
                     height={24}
@@ -87,7 +107,16 @@ const { Content } = await render(project);
           </div>
         </div>
       </div>
-      <Content />
+
+      {/* Renderizamos el contenido remoto inyectando el HTML */}
+      <div class="markdown-content">
+        {remoteContent ? (
+          <div class="markdown-repository" set:html={remoteContent} />
+        ) : (
+          <p>No se pudo cargar el contenido del repositorio.</p>
+        )}
+      </div>
+
       <hr class="end-of-article" />
       <a href="/projects" class="block-link" data-pagefind-ignore
         >← Volver a los proyectos</a
@@ -95,10 +124,17 @@ const { Content } = await render(project);
     </Card>
   </article>
 </Layout>
+
 <style>
   .project-info-item {
     display: flex;
     align-items: center;
     gap: 1rem;
+  }
+  .markdown-content :global(pre) {
+    background: #1a1a1a;
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
   }
 </style>
