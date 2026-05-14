@@ -45,6 +45,7 @@ const { title, description, image, pagefindIgnore, article } = Astro.props;
 		<meta name="og:url" content={Astro.site} />
 		{!article && <meta name="og:type" content="website" />}
 		<meta name="og:locale" content="en" />
+		<link rel="canonical" href="https://holadevelopers.blog/"/>
 
 		{article && (
 			<meta name="og:type" content="article" />
