@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&display=swap');
+
 :root {
   --primary: #faa275;
   /* Needed for some hover effects. This is just the R, G and B values of the hex color above */
@@ -45,11 +47,22 @@
 
   /* Tipografia */
   --font-family-main: 'Fira Code', monospace;
+  --font-family-code: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 body {
   font-family: var(--font-family-main);
   font-variant-ligatures: contextual;
+}
+
+code,
+pre,
+pre *,
+code * {
+  font-family: var(--font-family-code);
+  font-variant-ligatures: contextual;
+  font-feature-settings: 'calt' 1, 'liga' 1;
+  line-height: 1.5;
 }
 
 .overview-list {
