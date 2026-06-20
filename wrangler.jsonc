@@ -3,7 +3,7 @@
   "name": "blog",
   "compatibility_date": "2025-09-27",
   "compatibility_flags": ["nodejs_compat"],
-  "main": "dist/_worker.js/index.js",
+  "main": "@astrojs/cloudflare/entrypoints/server",
   "assets": {
     "binding": "ASSETS",
     "directory": "dist"
