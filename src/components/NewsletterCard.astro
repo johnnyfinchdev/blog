@@ -29,6 +29,27 @@ const { class: className, ...props } = Astro.props;
     bottom: 0px;
     left: 0px;
   }
+
+  /* Styles for inputs using CSS variables instead of Tailwind arbitrary hex */
+  .custom-input {
+    background-color: transparent;
+    color: var(--color-white);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .custom-input {
+      background-color: var(--surface-dark);
+      color: var(--color-white);
+      border-color: var(--border-dark);
+    }
+    .custom-input::placeholder {
+      color: var(--muted);
+    }
+    .custom-input:focus {
+      border-color: var(--accent-fc8e6d);
+      box-shadow: 0 0 0 3px rgba(252, 142, 109, 0.12);
+    }
+  }
 </style>
 
 <Card>
@@ -74,7 +95,7 @@ const { class: className, ...props } = Astro.props;
               id="discord"
               name="discord"
               placeholder="Discord (opcional)"
-              class="flex-1 px-3 py-2 mt-5 placeholder-gray-300 border border-gray-300 rounded-sm focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:[#121212] dark:text-white dark:placeholder-gray-400 dark:border-[#fabfad] dark:focus:ring-gray-900 dark:focus:border-[#fc8e6d]"
+              class="flex-1 px-3 py-2 mt-5 placeholder-gray-300 border border-gray-300 rounded-sm focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 custom-input"
             />
           </div>
           <div class="flex flex-col sm:flex-row pt-4">
@@ -83,7 +104,7 @@ const { class: className, ...props } = Astro.props;
               id="email"
               name="email"
               placeholder="Email*"
-              class="flex-1 px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-sm focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:[#121212] dark:text-white dark:placeholder-gray-400 dark:border-[#fabfad] dark:focus:ring-gray-900 dark:focus:border-[#fc8e6d]"
+              class="flex-1 px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-sm focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 custom-input"
               required
             />
           </div>
@@ -109,7 +130,8 @@ const { class: className, ...props } = Astro.props;
             <div class="relative m-auto group">
               <div
                 id="submit-glow"
-                class="absolute transition-all duration-1000 -inset-px bg-linear-to-r from-[#ff7b72] via-[#ffa657] to-[#f48866] rounded-xl blur-lg animate-tilt opacity-70 group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200 group-has-disabled:opacity-0"
+                class="absolute transition-all duration-1000 -inset-px rounded-xl blur-lg animate-tilt opacity-70 group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200 group-has-disabled:opacity-0"
+                style="background: linear-gradient(90deg, var(--accent-hot), var(--accent-medium), var(--accent-f48866));"
               >
               </div>
               <button

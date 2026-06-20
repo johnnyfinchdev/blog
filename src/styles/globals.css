@@ -1,10 +1,55 @@
 :root {
-  --primary: #f48866;
+  --primary: #faa275;
   /* Needed for some hover effects. This is just the R, G and B values of the hex color above */
-  --primary-rgb: 244, 136, 102;
+  --primary-rgb: 255, 140, 97;
   /* Used for links */
-  --primary-light: #eba19aff;
-  --primary-lightest: #fdbeb8ff;
+  --primary-light: #eb8984;
+  --primary-lightest: #db7093;
+
+  /* Paleta completa solicitada */
+  --secondary: #eb8984;
+  --accent-light: #eb8984;
+  --accent-dark: #ff8c61;
+
+  /* Neutros estructurales */
+  --bg-main: #faf6f5;
+  --bg-card: #ffffff;
+  --text-dark: #2c2425;
+
+  /* Colores reutilizados detectados en el proyecto */
+  --color-white: #ffffff;
+  --black: #000000;
+  --surface-dark: #121212;
+  --border-dark: #353535;
+  --muted: #c7c7c7;
+  --bg-muted: #252525;
+
+  /* Accents (mapear variantes existentes) */
+  --accent-soft: #ffb197; /* used in controls */
+  --accent-strong: #ff7349; /* progress */
+  --accent-medium: #ffa657; /* secondary accent */
+  --accent-pale: #ffd4c4;
+  --highlight-pale: #FFEAE3;
+  --accent-hot: #ff7b72;
+  --accent-f48866: #f48866;
+  --soft-beige: #fabfad;
+  --accent-fc8e6d: #fc8e6d;
+  --prose-color: #d4d4d8;
+  --nav-active: #181818;
+  --muted-dark: #838383;
+  --pre-bg: #1a1a1a;
+
+  /* Colores extras para botones */
+  --message-bg: #ff8c61;
+  --btn-extra: #ff8c6180;
+
+  /* Tipografia */
+  --font-family-main: 'Fira Code', monospace;
+}
+
+body {
+  font-family: var(--font-family-main);
+  font-variant-ligatures: contextual;
 }
 
 .overview-list {
@@ -107,8 +152,8 @@ main {
   flex-direction: column;
   gap: 1rem;
   padding: 1rem;
-  border: 1px solid #353535;
-  color: #ffffff;
+  border: 1px solid var(--border-dark);
+  color: var(--color-white);
   text-decoration: none;
   transition: background-color 0.15s ease, border 0.15s ease;
 }
@@ -117,7 +162,7 @@ main {
 .post-container:focus-visible {
   background-color: rgba(var(--primary-rgb), 0.125);
   border: 1px solid var(--primary);
-  color: white;
+  color: var(--color-white);
   text-decoration: none;
 }
 
@@ -136,7 +181,7 @@ main {
 }
 
 .post-date {
-  color: #c7c7c7;
+  color: var(--muted);
 }
 
 .text-glow {
@@ -145,13 +190,13 @@ main {
 }
 
 .block-link {
-  color: white;
+  color: var(--color-white);
   padding: 0.25rem 0.5rem;
 }
 
 .block-link:hover,
 .block-link:focus-visible {
-  color: white;
+  color: var(--color-white);
   background-color: var(--primary);
   text-decoration: none;
   outline: none;

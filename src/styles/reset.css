@@ -24,7 +24,7 @@
 
 html {
 	color-scheme: dark;
-  background-color: #0b0b0b;
+  background-color: var(--black);
 }
 
 html,
@@ -65,7 +65,7 @@ h6 {
 }
 
 button {
-	background-color: #ff7b72;
+  background-color: var(--accent-medium);
 }
 
 p:last-of-type {
@@ -78,7 +78,7 @@ pre, pre *, code {
 }
 
 pre {
-  border: 1px solid rgb(#353535);
+  border: 1px solid var(--border-dark);
   overflow-y: hidden;
   padding: .5rem;
   border-radius: .25rem;

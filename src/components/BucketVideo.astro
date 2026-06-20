@@ -13,7 +13,7 @@ const { class: className, resource = "recurso", ...props } = Astro.props;
     max-width: 800px;
     border-radius: 12px;
     overflow: hidden;
-    background: #000;
+    background: var(--black);
   }
 
   .article-video {
@@ -70,7 +70,7 @@ const { class: className, resource = "recurso", ...props } = Astro.props;
     position: absolute;
     left: 0;
     height: 100%;
-    background: #ff7349; /* Color principal */
+    background: var(--accent-strong); /* Color principal */
     border-radius: 4px;
     width: 0%; /* Se actualiza con JS */
   }
@@ -79,13 +79,13 @@ const { class: className, resource = "recurso", ...props } = Astro.props;
     display: flex;
     align-items: center;
     gap: 5px;
-    color: #000000;
+    color: var(--black);
   }
 
   .control-btn {
     background: none;
     border: none;
-    color: #ffb197;
+    color: var(--accent-soft);
     font-size: 1.2rem;
     cursor: pointer;
   }
@@ -98,7 +98,7 @@ const { class: className, resource = "recurso", ...props } = Astro.props;
 
     width: 16px;
     height: 16px;
-    background-color: #ffb197;
+    background-color: var(--accent-soft);
     border: 2px solid transparent;
     border-radius: 50%; /* Hace que sea un círculo */
 
@@ -120,14 +120,14 @@ const { class: className, resource = "recurso", ...props } = Astro.props;
   .progress-container:hover .seek-handle {
     width: 20px;
     height: 20px;
-    background-color: #ffb197;
+    background-color: var(--accent-soft);
   }
 
   .time-display {
     font-family:
       "Courier New", Courier, monospace; /* Fuente monoespaciada para que no "salte" el texto al cambiar los números */
     font-size: 0.85rem;
-    color: #fff;
+    color: var(--color-white);
     min-width: 100px; /* Evita que los botones se muevan cuando el tiempo cambia */
     text-align: center;
   }
@@ -150,9 +150,9 @@ const { class: className, resource = "recurso", ...props } = Astro.props;
     width: 80px;
     cursor: pointer;
     /* CAMBIA AQUÍ EL COLOR: */
-    accent-color: #ffb197;
+    accent-color: var(--accent-soft);
     border-radius: 5px;
-    background: rgba(255, 126, 126, 0.315);
+    background: rgba(255, 177, 151, 0.315);
     height: 5px;
     border-radius: 5px;
   }
@@ -188,7 +188,7 @@ const { class: className, resource = "recurso", ...props } = Astro.props;
   #fullscreen-btn:hover {
     transform: scale(1.2);
     transition: transform 0.2s none;
-    color: #ffd4c4;
+    color: var(--accent-pale);
   }
 </style>
 

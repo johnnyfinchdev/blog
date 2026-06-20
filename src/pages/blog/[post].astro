@@ -109,7 +109,7 @@ const { Content, headings } = await render(post);
       {
         post.data.updatedAt ? (
           <div style="position: relative;">
-            <small style="position:absolute; display:flex; gap:0.5em; align-items: center; color:#838383">
+            <small style="position:absolute; display:flex; gap:0.5em; align-items: center; color:var(--muted-dark)">
               <Icon
                 type="lucide"
                 name="calendar-arrow-up"
@@ -132,14 +132,14 @@ const { Content, headings } = await render(post);
       }
       {
         post.data.videoId && (
-          <a
+            <a
             href={`https://www.youtube.com/watch?v=${post.data.videoId}`}
-            style={{ color: "#FFFFFF", fontWeight: "bold" }}
+            style={{ color: 'var(--color-white)', fontWeight: 'bold' }}
             target="_blank"
           >
             <div
               style={{
-                backgroundColor: "#FF7349",
+                backgroundColor: "var(--btn-extra)",
                 borderRadius: "10px",
                 textAlign: "center",
               }}
@@ -243,7 +243,7 @@ const { Content, headings } = await render(post);
   }
 
   .comments * {
-    border-color: #353535 !important;
+    border-color: var(--border-dark) !important;
   }
 
   @media screen and (max-width: 640px) {

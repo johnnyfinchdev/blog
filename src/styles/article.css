@@ -14,7 +14,7 @@ article {
 article hr {
   height: 1px;
   border: none;
-  background-color: #353535;
+  background-color: var(--border-dark);
 }
 
 p:has(img) {
@@ -44,7 +44,7 @@ p img {
 }
 
 .toc-card ol li a {
-  color: #c7c7c7;
+  color: var(--muted);
   font-size: .925rem;
   padding: .25rem .5rem;
   box-decoration-break: clone;
@@ -52,7 +52,7 @@ p img {
 }
 
 .toc-card ol li a:hover {
-  color: white;
+  color: var(--color-white);
   text-decoration: none;
 }
 
@@ -69,7 +69,7 @@ p img {
 }
 
 ol li a.active {
-  color: white;
+  color: var(--color-white);
   background: var(--primary);
 }
 
@@ -104,14 +104,14 @@ ol li a.active {
 .article-h1 {
   margin-bottom: 0;
   font-size: 2em;
-  background: #ffffff;
+  background: var(--color-white);
   padding: .25rem .675rem;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
   position: relative;
   line-height: 1.2;
   display: inline;
-  color: #000000;
+  color: var(--black);
 }
 
 .article-info {
@@ -119,8 +119,8 @@ ol li a.active {
   flex-direction: row;
   gap: .5rem;
   font-family: 'Geist Mono', 'Courier New', Courier, monospace;
-  background: #ffffff;
-  color: #000000;
+  background: var(--color-white);
+  color: var(--black);
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
   padding: 0 .75rem;
@@ -141,19 +141,19 @@ ol li a.active {
     display: inline;
     background-color: transparent;
     padding: 0;
-    color: white;
+    color: var(--color-white);
   }
 
   .article-info {
     display: block;
     background-color: transparent;
     padding: 0;
-    color: white;
+    color: var(--color-white);
   }
 }
 
 code:not(.astro-code code) {
-  background-color: #353535;
+  background-color: var(--border-dark);
   padding: .125rem .25rem;
   font-size: .925rem;
 }
@@ -169,7 +169,7 @@ code:not(.astro-code code) {
   margin-bottom: 1.5rem;
   width: 100%;
   height: 1px;
-  background-color: #353535;
+  background-color: var(--border-dark);
   border: none;
 }
 
@@ -195,7 +195,7 @@ table {
 
 table th {
   padding: .5rem 1.5rem .5rem 0;
-  border-bottom: 1px solid #353535;
+  border-bottom: 1px solid var(--border-dark);
 }
 
 table tbody {
@@ -203,7 +203,7 @@ table tbody {
 }
 
 table tbody tr {
-  border-bottom: 1px solid #353535;
+  border-bottom: 1px solid var(--border-dark);
 }
 
 table tbody tr td {
