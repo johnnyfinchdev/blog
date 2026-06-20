@@ -7,11 +7,12 @@ Puedes hacer libremente un fork de este proyecto, clonarlo, modificarlo, o lo qu
 Para poner a punto el proyecto sigue esto dos sencillos pasos:
 1. Por supuesto un npm install:
 ```bash
-npm install
+pnpm install
 ```
+
 2. Para ejecutarlo:
 ```bash
-npm run dev
+pnpm run dev
 ```
 ### ¿Puedes subir posts?
 Tal vez puedes sugerir algún post o que hable de cierto tema, pero en principio quien tiene puede crear post y publicarlos soy yo. Si es algo que se puede mucho, podría crear una propiedad nueva llamada, autor y meter posts que la gente haga, con su respectivo crédito. Permitir que la gente pueda subir posts va de la mano con la [filosofía](https://holadevelopers.blog/blog/filosofia/) del blog, pero por ahora solo yo podré subir posts.
