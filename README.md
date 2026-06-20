@@ -4,7 +4,12 @@ Spectre es un tema inspirado en terminal para Astro, creado con TypeScript y Ast
 ## Contribuye
 Puedes hacer libremente un fork de este proyecto, clonarlo, modificarlo, o lo que quieras, esto es [Libre Source](https://holadevelopers.blog/blog/filosofia/)
 
-Para ejecutar el proyecto es:
+Para poner a punto el proyecto sigue esto dos sencillos pasos:
+1. Por supuesto un npm install:
+```bash
+npm install
+```
+2. Para ejecutarlo:
 ```bash
 npm run dev
 ```
