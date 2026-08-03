@@ -1,20 +1,30 @@
 import type { APIRoute } from 'astro';
 import { Resend } from 'resend';
+import { createRateLimiter, validateNewsletterPayload } from './newsletter-validation.js';
 
 // Marcar como endpoint dinámico (no pre-renderizado)
 export const prerender = false;
 
+const rateLimiter = createRateLimiter(5, 60_000);
+
 export const POST: APIRoute = async (context) => {
 	try {
-		// Obtener los datos del JSON
 		const body = await context.request.json();
-		const { email, discord, terms } = body;
+		const ip = context.request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+		const rateLimitResult = rateLimiter(ip);
 
-		if(!email || !terms){
-			throw new Error('Faltan datos por rellenar');
+		if (!rateLimitResult.allowed) {
+			return new Response(JSON.stringify({ success: false, error: 'Demasiadas solicitudes. Inténtalo de nuevo más tarde.' }), { status: 429, headers: { 'Content-Type': 'application/json' } });
 		}
 
-		const env = context.locals.runtime.env as Record<string, any>;
+		const validation = validateNewsletterPayload(body, { ip });
+		if (!validation.ok) {
+			return new Response(JSON.stringify({ success: false, error: validation.error }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+		}
+
+		const { email, discord } = validation.value;
+		const runtimeEnv = (context.locals as { runtime?: { env?: Record<string, unknown> } }).runtime?.env;
+		const env = (runtimeEnv as Record<string, any>) ?? {};
 		const resend = new Resend(env.RESEND_API_KEY);
 
 		// 1. Verificación: ¿Ya existe?
@@ -25,7 +35,7 @@ export const POST: APIRoute = async (context) => {
 
 		// 2. Creación del contacto
 		const { data: contact, error: contactError } = await resend.contacts.create({
-			email: email,
+			email,
 			firstName: discord || '',
 			unsubscribed: false,
 		});
@@ -41,7 +51,7 @@ export const POST: APIRoute = async (context) => {
 		// Usamos una constante para capturar el resultado antes de retornar nada
 		const { data: mailData, error: mailError } = await resend.emails.send({
 			from: 'Hola Developers! <newsletter@holadevelopers.blog>',
-			to: [email.trim()],
+			to: [email],
 			subject: 'Nos alegra que te hayas unido a la Newsletter, Developer',
 			html: `        
 				<h1>¡Hola Developer!</h1>
