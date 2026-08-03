@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 import { Resend } from 'resend';
 import { createRateLimiter, validateNewsletterPayload } from './newsletter-validation.js';
 
@@ -29,10 +30,7 @@ export const POST: APIRoute = async (context) => {
 		}
 
 		const { email, discord } = validation.value;
-		const runtimeEnv = (context.locals as { runtime?: { env?: Record<string, unknown> } }).runtime?.env;
-		const apiKey = (runtimeEnv?.RESEND_API_KEY as string | undefined)
-			?? (import.meta as ImportMeta & { env?: Record<string, string | undefined> }).env?.RESEND_API_KEY
-			?? (typeof process !== 'undefined' ? (process.env?.RESEND_API_KEY as string | undefined) : undefined);
+		const apiKey = env.RESEND_API_KEY as string | undefined;
 
 		if (!apiKey) {
 			console.error('RESEND_API_KEY no está configurada para el endpoint de newsletter.');
