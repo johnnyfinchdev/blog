@@ -59,6 +59,19 @@ const config = defineConfig({
   }),
   vite: {
     plugins: [tailwindcss()],
+    optimizeDeps: {
+        include: [
+          'astro/zod',
+          'astro/errors',
+          'astro/assets',
+          'astro/content/runtime',
+        ],
+    },  
+    ssr: {
+      optimizeDeps: {
+        include: ['astro/zod'],
+      },
+    },
   },
 });
 

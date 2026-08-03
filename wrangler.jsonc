@@ -1,3 +1,6 @@
+// NOTA: workerd/vite pineados a versiones concretas por bug de arranque
+// (std::terminate) en Windows con miniflare 4.20260617+ y vite 7.x.
+// No actualizar sin probar en local primero.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "blog",
