@@ -100,9 +100,14 @@ export const POST: APIRoute = async (context) => {
 
 	} catch (error) {
 		const message = error instanceof Error ? error.message : 'Error desconocido';
-		console.error('Error en newsletter:', message);
+		const details = error instanceof Error && error.stack ? error.stack : undefined;
+		console.error('Error en newsletter:', message, details);
 		return new Response(
-			JSON.stringify({ success: false, error: import.meta.env.DEV ? message : 'Error al procesar la solicitud' }),
+			JSON.stringify({
+				success: false,
+				error: message,
+				details: details,
+			}),
 			{ status: 500, headers: { 'Content-Type': 'application/json' } }
 		);
 	}
