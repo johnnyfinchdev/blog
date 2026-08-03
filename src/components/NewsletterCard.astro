@@ -247,6 +247,7 @@ const { class: className, ...props } = Astro.props;
             "modal-newsletter",
           ) as HTMLDialogElement;
           if (result.success) {
+            errorMsg.style.visibility = "hidden";
             modal.dispatchEvent(
               // Dispatch custom event
               new CustomEvent("open-modal", {
@@ -258,10 +259,9 @@ const { class: className, ...props } = Astro.props;
           }
         } catch (error) {
           console.error("Error:", error);
-          // alert("Error al suscribirse. Intenta nuevamente.");
           errorMsg.style.visibility = "visible";
           errorMsg.innerText =
-            "Error al suscribirse. Intenta nuevamente.";
+            error instanceof Error ? error.message : "Error al suscribirse. Intenta nuevamente.";
           submitButton.disabled = false;
           submitButton.textContent = originalText;
         }

@@ -9,7 +9,13 @@ const rateLimiter = createRateLimiter(5, 60_000);
 
 export const POST: APIRoute = async (context) => {
 	try {
-		const body = await context.request.json();
+		let body: unknown;
+		try {
+			body = await context.request.json();
+		} catch {
+			return new Response(JSON.stringify({ success: false, error: 'El cuerpo de la solicitud no es válido.' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+		}
+
 		const ip = context.request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
 		const rateLimitResult = rateLimiter(ip);
 
@@ -17,15 +23,23 @@ export const POST: APIRoute = async (context) => {
 			return new Response(JSON.stringify({ success: false, error: 'Demasiadas solicitudes. Inténtalo de nuevo más tarde.' }), { status: 429, headers: { 'Content-Type': 'application/json' } });
 		}
 
-		const validation = validateNewsletterPayload(body, { ip });
+		const validation = validateNewsletterPayload(typeof body === 'object' && body !== null ? body as Record<string, unknown> : undefined, { ip });
 		if (!validation.ok) {
 			return new Response(JSON.stringify({ success: false, error: validation.error }), { status: 400, headers: { 'Content-Type': 'application/json' } });
 		}
 
 		const { email, discord } = validation.value;
 		const runtimeEnv = (context.locals as { runtime?: { env?: Record<string, unknown> } }).runtime?.env;
-		const env = (runtimeEnv as Record<string, any>) ?? {};
-		const resend = new Resend(env.RESEND_API_KEY);
+		const apiKey = (runtimeEnv?.RESEND_API_KEY as string | undefined)
+			?? (import.meta as ImportMeta & { env?: Record<string, string | undefined> }).env?.RESEND_API_KEY
+			?? (process.env?.RESEND_API_KEY as string | undefined);
+
+		if (!apiKey) {
+			console.error('RESEND_API_KEY no está configurada para el endpoint de newsletter.');
+			return new Response(JSON.stringify({ success: false, error: 'El servicio de correos no está configurado.' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+		}
+
+		const resend = new Resend(apiKey);
 
 		// 1. Verificación: ¿Ya existe?
 		const { data: existing } = await resend.contacts.get({ email });
@@ -85,9 +99,10 @@ export const POST: APIRoute = async (context) => {
 		return new Response(JSON.stringify({ success: true, mailId: mailData?.id }), { status: 200 });
 
 	} catch (error) {
-		console.error('Error en newsletter:', error);
+		const message = error instanceof Error ? error.message : 'Error desconocido';
+		console.error('Error en newsletter:', message);
 		return new Response(
-			JSON.stringify({ success: false, error: 'Error al procesar la solicitud' }),
+			JSON.stringify({ success: false, error: import.meta.env.DEV ? message : 'Error al procesar la solicitud' }),
 			{ status: 500, headers: { 'Content-Type': 'application/json' } }
 		);
 	}
