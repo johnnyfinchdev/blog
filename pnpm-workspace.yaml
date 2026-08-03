@@ -1,3 +1,6 @@
+packages:
+  - '.'
+  
 overrides:
   '@cloudflare/workerd-windows-64': '1.20260310.1'
   workerd: '1.20260310.1'
