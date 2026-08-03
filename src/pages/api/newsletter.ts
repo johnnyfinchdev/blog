@@ -32,7 +32,7 @@ export const POST: APIRoute = async (context) => {
 		const runtimeEnv = (context.locals as { runtime?: { env?: Record<string, unknown> } }).runtime?.env;
 		const apiKey = (runtimeEnv?.RESEND_API_KEY as string | undefined)
 			?? (import.meta as ImportMeta & { env?: Record<string, string | undefined> }).env?.RESEND_API_KEY
-			?? (process.env?.RESEND_API_KEY as string | undefined);
+			?? (typeof process !== 'undefined' ? (process.env?.RESEND_API_KEY as string | undefined) : undefined);
 
 		if (!apiKey) {
 			console.error('RESEND_API_KEY no está configurada para el endpoint de newsletter.');
