@@ -121,7 +121,9 @@ const { Content, headings } = await render(post);
           </div>
         ) : null
       }
-      <Content />
+      <div class="prose prose-invert max-w-none">
+        <Content />
+      </div>
 
       {
         post.data.video && (
